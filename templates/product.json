@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-template",
+      "settings": {
+        "show_rating": true,
+        "review_count": "128",
+        "enable_bundles": true,
+        "bundle_heading": "Bundle & Save"
+      },
+      "blocks": {
+        "tier-1": {
+          "type": "bundle_tier",
+          "settings": {
+            "label": "Buy 1",
+            "price": "29.99",
+            "compare_price": "",
+            "save_text": "",
+            "badge": ""
+          }
+        },
+        "tier-2": {
+          "type": "bundle_tier",
+          "settings": {
+            "label": "Buy 2",
+            "price": "49.99",
+            "compare_price": "59.98",
+            "save_text": "You save 25%",
+            "badge": "Most Bought"
+          }
+        },
+        "tier-3": {
+          "type": "bundle_tier",
+          "settings": {
+            "label": "Buy 3",
+            "price": "59.99",
+            "compare_price": "89.97",
+            "save_text": "You save 42%",
+            "badge": "Best Value"
+          }
+        },
+        "accordion-1": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "<p>Free shipping on all orders over $55. Easy 30-day returns — no questions asked.</p>"
+          }
+        },
+        "accordion-2": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Size Guide",
+            "content": "<p>Please refer to our size chart to find your perfect fit. We recommend going with your usual size.</p>"
+          }
+        }
+      },
+      "block_order": ["tier-1", "tier-2", "tier-3", "accordion-1", "accordion-2"]
+    }
+  },
+  "order": ["main"]
+}

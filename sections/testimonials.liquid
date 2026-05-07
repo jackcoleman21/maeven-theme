@@ -1,0 +1,99 @@
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="testimonials__header">
+      <h2 class="testimonials__title">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="testimonials__grid">
+      {% for block in section.blocks %}
+        <div class="testimonial-card animate-in" {{ block.shopify_attributes }}>
+          <div class="testimonial-card__stars">
+            <div class="stars">
+              {% for i in (1..5) %}
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {% endfor %}
+            </div>
+          </div>
+          <p class="testimonial-card__text">"{{ block.settings.text }}"</p>
+          <div class="testimonial-card__author">{{ block.settings.author }}</div>
+          {% if block.settings.verified %}
+            <div class="testimonial-card__verified">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              Verified Purchase
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What Our Customers Say"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Review text",
+          "default": "This is the most comfortable shapewear I've ever worn. It smooths everything without digging in."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author name",
+          "default": "Sarah M."
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified purchase",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "Finally, shapewear that actually works AND is comfortable. I wear it every single day.",
+            "author": "Jessica T.",
+            "verified": true
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "I was skeptical but this bodysuit is incredible. Smooth under everything and I forget I'm wearing it.",
+            "author": "Amanda R.",
+            "verified": true
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "The bundle deal is amazing. I got three pairs and they're all perfect. Best shapewear purchase ever.",
+            "author": "Monica L.",
+            "verified": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

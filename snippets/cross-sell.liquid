@@ -1,0 +1,47 @@
+{%- comment -%}
+  Cross-sell "Frequently Bought Together" snippet.
+  Usage: {% render 'cross-sell', cross_handle_1: 'impact-leggings', cross_handle_2: 'impact-halter-top' %}
+{%- endcomment -%}
+
+{%- assign cs1 = all_products[cross_handle_1] -%}
+{%- assign cs2 = all_products[cross_handle_2] -%}
+
+{%- if cs1 != blank or cs2 != blank -%}
+<div class="cc-cross-sell">
+  <h3 class="cc-cross-title">Frequently Bought Together</h3>
+  <div class="cc-cross-cards">
+    {%- if cs1 != blank -%}
+    <a href="{{ cs1.url }}" class="cc-cross-card">
+      {%- if cs1.featured_image -%}
+      <div class="cc-cross-img">
+        <img src="{{ cs1.featured_image | image_url: width: 300 }}" alt="{{ cs1.title }}" loading="lazy">
+      </div>
+      {%- endif -%}
+      <div class="cc-cross-info">
+        <span class="cc-cross-name">{{ cs1.title }}</span>
+        <span class="cc-cross-price">{{ cs1.price | money }}</span>
+        {%- if cs1.compare_at_price > cs1.price -%}
+        <span class="cc-cross-compare">{{ cs1.compare_at_price | money }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+    {%- endif -%}
+    {%- if cs2 != blank -%}
+    <a href="{{ cs2.url }}" class="cc-cross-card">
+      {%- if cs2.featured_image -%}
+      <div class="cc-cross-img">
+        <img src="{{ cs2.featured_image | image_url: width: 300 }}" alt="{{ cs2.title }}" loading="lazy">
+      </div>
+      {%- endif -%}
+      <div class="cc-cross-info">
+        <span class="cc-cross-name">{{ cs2.title }}</span>
+        <span class="cc-cross-price">{{ cs2.price | money }}</span>
+        {%- if cs2.compare_at_price > cs2.price -%}
+        <span class="cc-cross-compare">{{ cs2.compare_at_price | money }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}

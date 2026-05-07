@@ -1,0 +1,104 @@
+<header class="header" id="header" role="banner">
+  <div class="container header__inner">
+    <div class="header__logo">
+      <a href="/" aria-label="{{ shop.name }}">
+        {% if section.settings.logo %}
+          <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="200" height="auto" loading="eager">
+        {% else %}
+          MAEVEN
+        {% endif %}
+      </a>
+    </div>
+
+    <nav class="header__nav" role="navigation" aria-label="Main navigation">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}" class="header__nav-link">{{ link.title }}</a>
+      {% endfor %}
+      {% if section.settings.menu.links.size == 0 %}
+        <a href="/" class="header__nav-link">Home</a>
+        <a href="/products/impact-shorts" class="header__nav-link">Shorts</a>
+        <a href="/products/impact-halter-top" class="header__nav-link">Tops</a>
+        <a href="/products/backless-jumpsuit" class="header__nav-link">Jumpsuits</a>
+        <a href="/products/impact-leggings" class="header__nav-link">Leggings</a>
+        <a href="/products/yoga-shorts" class="header__nav-link">Yoga Shorts</a>
+        <a href="/collections/all" class="header__nav-link">Best Sellers</a>
+      {% endif %}
+    </nav>
+
+    <div class="header__actions">
+      <button class="header__action-btn" aria-label="Search" data-search-toggle>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+      </button>
+      <a href="/account" class="header__action-btn" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      <button class="header__action-btn" aria-label="Cart" data-cart-toggle>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="header__cart-count" style="display:{% if cart.item_count > 0 %}flex{% else %}none{% endif %}">
+          {{ cart.item_count }}
+        </span>
+      </button>
+      <button class="header__menu-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav__overlay"></div>
+  <div class="mobile-nav__content">
+    <button class="mobile-nav__close" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <nav class="mobile-nav__links">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+      {% endfor %}
+      {% if section.settings.menu.links.size == 0 %}
+        <a href="/" class="mobile-nav__link">Home</a>
+        <a href="/products/impact-shorts" class="mobile-nav__link">Shorts</a>
+        <a href="/products/impact-halter-top" class="mobile-nav__link">Tops</a>
+        <a href="/products/backless-jumpsuit" class="mobile-nav__link">Jumpsuits</a>
+        <a href="/products/impact-leggings" class="mobile-nav__link">Leggings</a>
+        <a href="/products/yoga-shorts" class="mobile-nav__link">Yoga Shorts</a>
+        <a href="/collections/all" class="mobile-nav__link">Best Sellers</a>
+        <a href="/pages/contact" class="mobile-nav__link">Contact Us</a>
+      {% endif %}
+    </nav>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

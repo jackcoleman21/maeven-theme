@@ -1,0 +1,32 @@
+<div class="announcement-bar" role="region" aria-label="{{ section.settings.text }}">
+  <div class="announcement-bar__track">
+    {% for i in (1..10) %}
+      <span class="announcement-bar__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        {{ section.settings.text }}
+      </span>
+      <span class="announcement-bar__dot"></span>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Announcement text",
+      "default": "Free Shipping on Orders $55+"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    }
+  ]
+}
+{% endschema %}

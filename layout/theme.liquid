@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+
+  <title>
+    {{ page_title }}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {% render 'meta-tags' %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --noir: #0A0A0A;
+      --ivoire: #F7F4EF;
+      --creme: #EDE8DF;
+      --or: #C4A265;
+      --or-pale: #D9C9A1;
+      --or-deep: #9E7E42;
+      --pierre: #B5AFA6;
+      --fumee: #6B6560;
+      --cendre: #3D3833;
+      --soie-champagne: #E8DDD0;
+      --soie-blush: #DBBFB4;
+      --soie-sage: #A7B89E;
+      --soie-noir: #1A1714;
+      --soie-ivoire: #F2EDE5;
+      --soie-bordeaux: #6B2D3E;
+      --green-verify: #2D8F4E;
+      --star-gold: #F0A030;
+      --border-light: rgba(10,10,10,0.06);
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Syne', sans-serif;
+    }
+  </style>
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+</head>
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+  <a class="skip-to-content" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  {% sections 'header-group' %}
+
+  <main id="MainContent" class="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  <div id="cart-drawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-drawer__overlay" data-cart-close></div>
+    <div class="cart-drawer__content">
+      <div class="cart-drawer__header">
+        <h2>Your Cart</h2>
+        <button class="cart-drawer__close" data-cart-close aria-label="Close cart">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cart-drawer__body" id="cart-drawer-body">
+        <p class="cart-drawer__empty">Your cart is empty</p>
+      </div>
+      <div class="cart-drawer__footer">
+        <a href="/checkout" class="btn btn--full btn--primary">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  {{ 'theme.js' | asset_url | script_tag }}
+</body>
+</html>

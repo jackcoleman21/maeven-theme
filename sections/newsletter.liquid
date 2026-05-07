@@ -1,0 +1,55 @@
+<section class="newsletter" id="newsletter">
+  <div class="container">
+    <h2 class="newsletter__title">{{ section.settings.heading }}</h2>
+    <p class="newsletter__text">{{ section.settings.text }}</p>
+    {% form 'customer', class: 'newsletter__form' %}
+      <input
+        type="email"
+        name="contact[email]"
+        class="newsletter__input"
+        placeholder="{{ section.settings.placeholder }}"
+        required
+        autocomplete="email"
+        aria-label="Email address"
+      >
+      <button type="submit" class="newsletter__submit">{{ section.settings.button_text }}</button>
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the Maeven Family"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Subtext",
+      "default": "Subscribe for exclusive deals, new arrivals, and 10% off your first order."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

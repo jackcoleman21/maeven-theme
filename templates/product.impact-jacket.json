@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-jacket",
+      "settings": {
+        "review_count": "987",
+        "avg_rating": "4.8",
+        "total_reviews": "50+"
+      }
+    }
+  },
+  "order": ["main"]
+}

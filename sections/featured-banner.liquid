@@ -1,0 +1,89 @@
+<section class="featured-banner">
+  <div class="featured-banner__inner{% if section.settings.reverse %} featured-banner__inner--reverse{% endif %}">
+    <div class="featured-banner__media">
+      {% if section.settings.image %}
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          alt="{{ section.settings.image.alt | default: section.settings.heading }}"
+          width="1200"
+          height="800"
+          loading="lazy"
+        >
+      {% else %}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+    </div>
+    <div class="featured-banner__content">
+      {% if section.settings.subtitle != blank %}
+        <span class="featured-banner__subtitle">{{ section.settings.subtitle }}</span>
+      {% endif %}
+      <h2 class="featured-banner__title">{{ section.settings.heading }}</h2>
+      <p class="featured-banner__text">{{ section.settings.text }}</p>
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="btn btn--primary">
+          {{ section.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  {% if section.settings.reverse %}
+    .featured-banner__inner--reverse { direction: rtl; }
+    .featured-banner__inner--reverse > * { direction: ltr; }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Featured Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "New Arrival"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Confidence, redesigned."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Our new collection combines comfort with confidence. Designed to smooth, sculpt, and support your natural silhouette — all day long.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Reverse layout",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Banner"
+    }
+  ]
+}
+{% endschema %}

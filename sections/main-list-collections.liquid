@@ -1,0 +1,52 @@
+<section class="main-list-collections" style="padding: 40px 0 80px;">
+  <div class="container">
+    <div class="collection-header">
+      <h1 class="collection-header__title">Collections</h1>
+    </div>
+
+    <div class="product-grid" style="grid-template-columns: repeat(3, 1fr);">
+      {% for collection in collections %}
+        {% unless collection.handle == 'all' %}
+          <div class="product-card animate-in">
+            <a href="{{ collection.url }}" class="product-card__media" style="aspect-ratio: 4/3;">
+              {% if collection.image %}
+                <img
+                  src="{{ collection.image | image_url: width: 800 }}"
+                  alt="{{ collection.title }}"
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                >
+              {% elsif collection.products.first.featured_image %}
+                <img
+                  src="{{ collection.products.first.featured_image | image_url: width: 800 }}"
+                  alt="{{ collection.title }}"
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                >
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </a>
+            <div class="product-card__info" style="text-align: center;">
+              <h2 class="product-card__title" style="font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+                <a href="{{ collection.url }}">{{ collection.title }}</a>
+              </h2>
+              <p style="font-size: 0.8125rem; color: var(--color-text-light);">
+                {{ collection.products_count }} {{ collection.products_count | pluralize: 'product', 'products' }}
+              </p>
+            </div>
+          </div>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection List",
+  "settings": []
+}
+{% endschema %}

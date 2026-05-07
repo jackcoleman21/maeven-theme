@@ -1,0 +1,53 @@
+<div class="marquee-ticker">
+  <div class="marquee-ticker__track">
+    {%- for i in (1..12) -%}
+      <span class="marquee-ticker__item">💌 Subscribe and get $10 off your first order</span>
+      <span class="marquee-ticker__sep">✦</span>
+      <span class="marquee-ticker__item">✨ Over 50,000+ Happy Customers</span>
+      <span class="marquee-ticker__sep">✦</span>
+      <span class="marquee-ticker__item">🔥 Free Shipping on Orders $55+</span>
+      <span class="marquee-ticker__sep">✦</span>
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+.marquee-ticker {
+  background: #f5f1ec;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.marquee-ticker__track {
+  display: inline-flex;
+  animation: marquee-scroll 60s linear infinite;
+}
+.marquee-ticker__item {
+  font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+  padding: 0 6px;
+}
+.marquee-ticker__sep {
+  color: #999;
+  font-size: 10px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+}
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Marquee Ticker",
+  "settings": [],
+  "presets": [{ "name": "Marquee Ticker" }]
+}
+{% endschema %}

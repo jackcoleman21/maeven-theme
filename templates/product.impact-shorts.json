@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-shorts",
+      "settings": {
+        "review_count": "1,826",
+        "avg_rating": "4.8",
+        "total_reviews": "50+"
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,48 @@
+<section class="main-cart" style="padding: 40px 0 80px;">
+  <div class="container">
+    <h1 style="font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 32px;">Your Cart</h1>
+
+    {% if cart.item_count > 0 %}
+      <form action="/cart" method="post">
+        {% for item in cart.items %}
+          <div class="cart-item">
+            <div class="cart-item__image">
+              {% if item.image %}
+                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title }}" width="200" loading="lazy">
+              {% endif %}
+            </div>
+            <div class="cart-item__details">
+              <div class="cart-item__title">{{ item.product.title }}</div>
+              <div class="cart-item__variant">{{ item.variant.title }}</div>
+              <div class="cart-item__price">{{ item.line_price | money }}</div>
+              <div class="cart-item__quantity">
+                <button type="button" class="cart-item__qty-btn">−</button>
+                <span class="cart-item__qty-value">{{ item.quantity }}</span>
+                <button type="button" class="cart-item__qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div style="margin-top: 32px; text-align: right;">
+          <p style="font-size: 1.125rem; font-weight: 700; margin-bottom: 16px;">
+            Total: {{ cart.total_price | money }}
+          </p>
+          <a href="/checkout" class="btn btn--primary btn--lg">Checkout</a>
+        </div>
+      </form>
+    {% else %}
+      <div style="text-align: center; padding: 60px 0;">
+        <p style="font-size: 1rem; color: var(--color-text-light); margin-bottom: 24px;">Your cart is empty.</p>
+        <a href="/collections/all" class="btn btn--primary">Continue Shopping</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart Page",
+  "settings": []
+}
+{% endschema %}

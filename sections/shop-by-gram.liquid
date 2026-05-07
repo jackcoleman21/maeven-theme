@@ -1,0 +1,261 @@
+<!-- ═══ Shop by Gram — UGC Video Gallery (Coral Canton exact) ═══ -->
+<section class="sbg-section" id="shop-by-gram">
+  <h2 class="sbg-heading">Shop by Gram</h2>
+  <p class="sbg-subheading">Inspire and let yourself be inspired, from one unique fashion to another.</p>
+
+  <div class="sbg-carousel" id="sbgCarousel">
+    <div class="sbg-track" id="sbgTrack">
+
+      <!-- Video 1 -->
+      <div class="sbg-card">
+        <video class="sbg-video" autoplay muted loop playsinline preload="metadata"
+          poster="https://coralcanton.com/cdn/shop/files/preview_images/5af1396e681544dc96ae3aec73d64f8a.thumbnail.0000000000.jpg?v=1761556458&width=600">
+          <source src="https://coralcanton.com/cdn/shop/videos/c/vp/5af1396e681544dc96ae3aec73d64f8a/5af1396e681544dc96ae3aec73d64f8a.HD-720p-1.6Mbps-60969740.mp4?v=0" type="video/mp4">
+        </video>
+        <a href="/collections/all" class="sbg-shop-link">Shop Now →</a>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="sbg-card">
+        <video class="sbg-video" autoplay muted loop playsinline preload="metadata"
+          poster="https://coralcanton.com/cdn/shop/files/preview_images/432c84fa52ce48ceb27066ec4cea3f85.thumbnail.0000000000.jpg?v=1761556458&width=600">
+          <source src="https://coralcanton.com/cdn/shop/videos/c/vp/432c84fa52ce48ceb27066ec4cea3f85/432c84fa52ce48ceb27066ec4cea3f85.HD-720p-1.6Mbps-60970398.mp4?v=0" type="video/mp4">
+        </video>
+        <a href="/collections/all" class="sbg-shop-link">Shop Now →</a>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="sbg-card">
+        <video class="sbg-video" autoplay muted loop playsinline preload="metadata">
+          <source src="https://coralcanton.com/cdn/shop/videos/c/vp/de78e787fca548fca43cd04a0d09ac53/de78e787fca548fca43cd04a0d09ac53.HD-720p-1.6Mbps-63551167.mp4?v=0" type="video/mp4">
+        </video>
+        <a href="/collections/all" class="sbg-shop-link">Shop Now →</a>
+      </div>
+
+      <!-- Video 4 -->
+      <div class="sbg-card">
+        <video class="sbg-video" autoplay muted loop playsinline preload="metadata">
+          <source src="https://coralcanton.com/cdn/shop/videos/c/vp/b80434748147438a944a180c97be3a8d/b80434748147438a944a180c97be3a8d.HD-720p-1.6Mbps-61044301.mp4?v=0" type="video/mp4">
+        </video>
+        <a href="/collections/all" class="sbg-shop-link">Shop Now →</a>
+      </div>
+
+    </div><!-- /sbg-track -->
+
+    <!-- Navigation Arrows -->
+    <button class="sbg-arrow sbg-arrow--prev" id="sbgPrev" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="sbg-arrow sbg-arrow--next" id="sbgNext" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+
+    <!-- Dot pagination -->
+    <div class="sbg-dots" id="sbgDots"></div>
+  </div>
+</section>
+
+<style>
+.sbg-section {
+  padding: 48px 0 24px;
+  text-align: center;
+  background: #fff;
+}
+.sbg-heading {
+  font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+.sbg-subheading {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  color: #777;
+  margin: 0 0 28px;
+  font-weight: 400;
+}
+.sbg-carousel {
+  position: relative;
+  overflow: hidden;
+  padding: 0 16px;
+}
+.sbg-track {
+  display: flex;
+  gap: 12px;
+  transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+.sbg-card {
+  flex: 0 0 calc(65% - 6px);
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #111;
+  aspect-ratio: 9/16;
+}
+.sbg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* Simple "Shop Now" link at bottom — NOT product info */
+.sbg-shop-link {
+  position: absolute;
+  bottom: 16px;
+  left: 12px;
+  right: 12px;
+  display: block;
+  text-align: center;
+  background: rgba(255,255,255,0.92);
+  color: #1a1a1a;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.sbg-shop-link:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+/* Arrows */
+.sbg-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+.sbg-arrow:hover { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
+.sbg-arrow svg { width: 20px; height: 20px; color: #1a1a1a; }
+.sbg-arrow--prev { left: 20px; }
+.sbg-arrow--next { right: 20px; }
+.sbg-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 0;
+}
+.sbg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.sbg-dot.active {
+  background: #1a1a1a;
+  transform: scale(1.3);
+}
+@media (min-width: 750px) {
+  .sbg-card { flex: 0 0 calc(33.333% - 8px); }
+}
+@media (max-width: 749px) {
+  .sbg-heading { font-size: 26px; }
+  .sbg-arrow { width: 36px; height: 36px; }
+  .sbg-arrow--prev { left: 12px; }
+  .sbg-arrow--next { right: 12px; }
+  .sbg-arrow svg { width: 16px; height: 16px; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var track = document.getElementById('sbgTrack');
+  var carousel = document.getElementById('sbgCarousel');
+  if (!track || !carousel) return;
+
+  var cards = track.querySelectorAll('.sbg-card');
+  var prevBtn = document.getElementById('sbgPrev');
+  var nextBtn = document.getElementById('sbgNext');
+  var dotsWrap = document.getElementById('sbgDots');
+  var currentIdx = 0;
+  var totalCards = cards.length;
+
+  for (var i = 0; i < totalCards; i++) {
+    var dot = document.createElement('button');
+    dot.className = 'sbg-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); });
+    dotsWrap.appendChild(dot);
+  }
+
+  function goTo(idx) {
+    if (idx < 0) idx = 0;
+    if (idx >= totalCards - 1) idx = totalCards - 1;
+    var cardW = cards[0].offsetWidth + 12;
+    track.style.transform = 'translateX(-' + (idx * cardW) + 'px)';
+    currentIdx = idx;
+    dotsWrap.querySelectorAll('.sbg-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  prevBtn.addEventListener('click', function() { goTo(currentIdx - 1); });
+  nextBtn.addEventListener('click', function() { goTo(currentIdx + 1); });
+
+  // Touch swipe
+  var startX = 0, dragging = false, dragDx = 0;
+  carousel.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    dragging = true; dragDx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+  carousel.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    dragDx = e.touches[0].clientX - startX;
+    var cardW = cards[0].offsetWidth + 12;
+    track.style.transform = 'translateX(' + (-(currentIdx * cardW) + dragDx) + 'px)';
+  }, { passive: true });
+  carousel.addEventListener('touchend', function() {
+    if (!dragging) return;
+    dragging = false;
+    track.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    var threshold = cards[0].offsetWidth * 0.2;
+    if (dragDx < -threshold) goTo(currentIdx + 1);
+    else if (dragDx > threshold) goTo(currentIdx - 1);
+    else goTo(currentIdx);
+    dragDx = 0;
+  }, { passive: true });
+
+  // Auto-play/pause videos
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var video = entry.target.querySelector('video');
+      if (video) {
+        if (entry.isIntersecting) video.play().catch(function(){});
+        else video.pause();
+      }
+    });
+  }, { threshold: 0.3 });
+  cards.forEach(function(card) { observer.observe(card); });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Shop by Gram",
+  "settings": [],
+  "presets": [{ "name": "Shop by Gram" }]
+}
+{% endschema %}

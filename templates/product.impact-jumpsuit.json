@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-jumpsuit",
+      "settings": {
+        "review_count": "847",
+        "avg_rating": "4.7",
+        "total_reviews": "30+"
+      }
+    }
+  },
+  "order": ["main"]
+}

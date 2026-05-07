@@ -1,0 +1,575 @@
+<!-- ═══ Collection Grid — "Popular Right Now" / "Impact Is Back" (Coral Canton exact) ═══ -->
+{%- assign col = collections[section.settings.collection] -%}
+
+<section class="cg-section" id="collection-{{ section.id }}">
+  <h2 class="cg-heading">{{ section.settings.heading | default: 'POPULAR RIGHT NOW' }}</h2>
+  {% if section.settings.subheading != blank %}
+    <p class="cg-subheading">{{ section.settings.subheading }}</p>
+  {% endif %}
+
+  <div class="cg-carousel" id="cgCarousel-{{ section.id }}">
+    <div class="cg-track" id="cgTrack-{{ section.id }}">
+
+      {%- if col and col != empty -%}
+        {%- assign limit = section.settings.limit | default: 10 -%}
+        {%- for product in col.products limit: limit -%}
+          <div class="cg-card" data-product-url="{{ product.url }}">
+            <a href="{{ product.url }}" class="cg-card-image-wrap">
+              {%- if product.featured_image -%}
+                <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.title }}" loading="lazy">
+              {%- endif -%}
+              {%- if product.compare_at_price > product.price -%}
+                {%- assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                <span class="cg-badge-discount">🔥-{{ discount }}%</span>
+              {%- endif -%}
+              {%- unless product.available -%}
+                <span class="cg-badge-oos">Out of Stock</span>
+              {%- endunless -%}
+              <button class="cg-quick-add" aria-label="Quick add {{ product.title }}" data-variant-id="{{ product.first_available_variant.id }}" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              </button>
+            </a>
+            <a href="{{ product.url }}" class="cg-card-info">
+              {%- assign color_option = product.selected_or_first_available_variant.option1 -%}
+              {%- if color_option -%}
+                <span class="cg-card-color">{{ color_option }}</span>
+              {%- endif -%}
+              <span class="cg-card-title">{{ product.title }}</span>
+              <span class="cg-card-pricing">
+                <span class="cg-price-sale">{{ product.price | money }}</span>
+                {%- if product.compare_at_price > product.price -%}
+                  <s class="cg-price-compare">{{ product.compare_at_price | money }}</s>
+                {%- endif -%}
+              </span>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- if section.blocks.size > 0 -%}
+          <!-- Block-based fallback -->
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'product_card' -%}
+              <div class="cg-card">
+                <a href="{{ block.settings.link | default: '#' }}" class="cg-card-image-wrap">
+                  {%- if block.settings.image -%}
+                    <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title }}" loading="lazy">
+                  {%- else -%}
+                    <div class="cg-card-placeholder"></div>
+                  {%- endif -%}
+                  {%- if block.settings.discount != blank -%}
+                    <span class="cg-badge-discount">🔥{{ block.settings.discount }}</span>
+                  {%- endif -%}
+                  <button class="cg-quick-add" aria-label="Quick add" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                  </button>
+                </a>
+                <a href="{{ block.settings.link | default: '#' }}" class="cg-card-info">
+                  {%- if block.settings.color != blank -%}
+                    <span class="cg-card-color">{{ block.settings.color }}</span>
+                  {%- endif -%}
+                  <span class="cg-card-title">{{ block.settings.title }}</span>
+                  <span class="cg-card-pricing">
+                    <span class="cg-price-sale">{{ block.settings.sale_price }}</span>
+                    {%- if block.settings.compare_price != blank -%}
+                      <s class="cg-price-compare">{{ block.settings.compare_price }}</s>
+                    {%- endif -%}
+                  </span>
+                </a>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Hardcoded CC content based on section heading -->
+          {%- assign heading_lower = section.settings.heading | downcase -%}
+
+          {%- if heading_lower contains 'popular' -%}
+            <!-- POPULAR RIGHT NOW: 10 Impact Halter Top variants -->
+            {%- assign prn_data = "Deep Sea|https://coralcanton.com/cdn/shop/files/deep_sea.jpg?width=800|$16.99|$36.98,Espresso|https://coralcanton.com/cdn/shop/files/2_851681e1-cad5-4eb5-a74a-1421e0ae2d3a.jpg?width=800|$16.98|$36.98,Lilac|https://coralcanton.com/cdn/shop/files/lilac.png?width=800|$16.99|$36.98,Ocean Mist|https://coralcanton.com/cdn/shop/files/1ocean_mistjpg.png?width=800|$16.99|$36.98,Spicy Red|https://coralcanton.com/cdn/shop/files/spicy_red.png?width=800|$16.99|$36.98,Lemon Lime|https://coralcanton.com/cdn/shop/files/12_9472c3d9-e067-460a-a0e6-662ac7b9f825.jpg?width=800|$16.99|$36.98,Raspberry|https://coralcanton.com/cdn/shop/files/12_fd8fe989-f9c0-4fd0-b9f9-ebe5433e9d8a.jpg?width=800|$16.99|$36.98,Blossom|https://coralcanton.com/cdn/shop/files/13_4c1df0d9-10c4-4685-8ecd-227e98c3b712.jpg?width=800|$16.99|$36.98,Electric Blue|https://coralcanton.com/cdn/shop/files/13_2eb5a369-03ad-4599-88c3-527158e36bc2.jpg?width=800|$16.98|$36.98,Noir Black|https://coralcanton.com/cdn/shop/files/13_4be0ff03-6fc3-4cd1-9cc4-621512e09578.jpg?width=800|$16.99|$36.98" | split: ',' -%}
+            {%- for item in prn_data -%}
+              {%- assign parts = item | split: '|' -%}
+              <div class="cg-card">
+                <a href="/products/impact-halter-top" class="cg-card-image-wrap">
+                  <img src="{{ parts[1] }}" alt="Impact Halter Top - {{ parts[0] }}" loading="lazy">
+                  <span class="cg-badge-discount">🔥-54%</span>
+                  <button class="cg-quick-add" aria-label="Quick add" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                  </button>
+                </a>
+                <a href="/products/impact-halter-top" class="cg-card-info">
+                  <span class="cg-card-color">{{ parts[0] }}</span>
+                  <span class="cg-card-title">Impact Halter Top</span>
+                  <span class="cg-card-pricing">
+                    <span class="cg-price-sale">{{ parts[2] }}</span>
+                    <s class="cg-price-compare">{{ parts[3] }}</s>
+                  </span>
+                </a>
+              </div>
+            {%- endfor -%}
+
+          {%- elsif heading_lower contains 'impact' -%}
+            <!-- IMPACT IS BACK: 10 Impact Shorts variants -->
+            {%- assign iib_data = "Midnight Black|https://coralcanton.com/cdn/shop/files/32_53e941b1-f7d7-407c-87a2-1b37c087db2c.png?width=800,Espresso|https://coralcanton.com/cdn/shop/files/2_851681e1-cad5-4eb5-a74a-1421e0ae2d3a.jpg?width=800,Feather Taupe|https://coralcanton.com/cdn/shop/files/2_f9dd2fb5-8f1f-4f18-90a6-57c8b4fb4d2a.jpg?width=800,Taupetastic|https://coralcanton.com/cdn/shop/files/1_beedbe74-2c53-41de-8ef2-eee48e12c52f.jpg?width=800,Truffle|https://coralcanton.com/cdn/shop/files/4_d1e9d3f0-7e9d-4b96-8c22-f6f6b8c3a7d5.jpg?width=800,Palm Tree|https://coralcanton.com/cdn/shop/files/5_c0e8f6a2-3d4e-4c5b-9a1f-2b3c4d5e6f7a.jpg?width=800,Spicy Red|https://coralcanton.com/cdn/shop/files/spicy_red.png?width=800,Bright Fuchsia|https://coralcanton.com/cdn/shop/files/6_a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg?width=800,Blossom|https://coralcanton.com/cdn/shop/files/13_4c1df0d9-10c4-4685-8ecd-227e98c3b712.jpg?width=800,Light Rose Pink|https://coralcanton.com/cdn/shop/files/7_f1e2d3c4-b5a6-9780-1234-567890abcdef.jpg?width=800" | split: ',' -%}
+            {%- for item in iib_data -%}
+              {%- assign parts = item | split: '|' -%}
+              <div class="cg-card">
+                <a href="/products/impact-shorts" class="cg-card-image-wrap">
+                  <img src="{{ parts[1] }}" alt="Impact Shorts - {{ parts[0] }}" loading="lazy">
+                  <span class="cg-badge-discount">🔥-54%</span>
+                  <button class="cg-quick-add" aria-label="Quick add" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                  </button>
+                </a>
+                <a href="/products/impact-shorts" class="cg-card-info">
+                  <span class="cg-card-color">{{ parts[0] }}</span>
+                  <span class="cg-card-title">Impact Shorts | 4.5"</span>
+                  <span class="cg-card-pricing">
+                    <span class="cg-price-sale">$13.95</span>
+                    <s class="cg-price-compare">$30.00</s>
+                  </span>
+                </a>
+              </div>
+            {%- endfor -%}
+
+          {%- elsif heading_lower contains 'arrival' -%}
+            <!-- NEW ARRIVAL: 5 Backless Jumpsuit variants -->
+            {%- assign na_data = "Burgundy|https://coralcanton.com/cdn/shop/files/4_1c80f0eb-945f-49d0-b379-983c4e364ecf.jpg?width=800,Plum Royale|https://coralcanton.com/cdn/shop/files/5_e2f3a4b5-c6d7-8901-ef23-456789abcdef.jpg?width=800,Deep Navy|https://coralcanton.com/cdn/shop/files/6_b3c4d5e6-f7a8-9012-3456-7890abcdef12.jpg?width=800,Espresso|https://coralcanton.com/cdn/shop/files/7_c4d5e6f7-a8b9-0123-4567-890abcdef123.jpg?width=800,Noir Black|https://coralcanton.com/cdn/shop/files/8_d5e6f7a8-b9c0-1234-5678-90abcdef1234.jpg?width=800" | split: ',' -%}
+            {%- for item in na_data -%}
+              {%- assign parts = item | split: '|' -%}
+              <div class="cg-card">
+                <a href="/products/backless-jumpsuit" class="cg-card-image-wrap">
+                  <img src="{{ parts[1] }}" alt="Backless Jumpsuit - {{ parts[0] }}" loading="lazy">
+                  <span class="cg-badge-discount">🔥-53%</span>
+                  <button class="cg-quick-add" aria-label="Quick add" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                  </button>
+                </a>
+                <a href="/products/backless-jumpsuit" class="cg-card-info">
+                  <span class="cg-card-color">{{ parts[0] }}</span>
+                  <span class="cg-card-title">Backless Flared Sport Jumpsuit</span>
+                  <span class="cg-card-pricing">
+                    <span class="cg-price-sale">$29.35</span>
+                    <s class="cg-price-compare">$63.00</s>
+                  </span>
+                </a>
+              </div>
+            {%- endfor -%}
+
+          {%- else -%}
+            <!-- Generic fallback from store products -->
+            {%- assign product_handles = 'yoga-shorts,impact-shorts,backless-flared-sport-jumpsuit,impact-halter-top,impact-leggings' | split: ',' -%}
+            {%- for handle in product_handles -%}
+              {%- assign p = all_products[handle] -%}
+              {%- if p and p.title != blank -%}
+                <div class="cg-card" data-product-url="{{ p.url }}">
+                  <a href="{{ p.url }}" class="cg-card-image-wrap">
+                    {%- if p.featured_image -%}
+                      <img src="{{ p.featured_image | image_url: width: 800 }}" alt="{{ p.title }}" loading="lazy">
+                    {%- endif -%}
+                    <span class="cg-badge-discount">🔥Sale</span>
+                    <button class="cg-quick-add" aria-label="Quick add" type="button">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    </button>
+                  </a>
+                  <a href="{{ p.url }}" class="cg-card-info">
+                    <span class="cg-card-title">{{ p.title }}</span>
+                    <span class="cg-card-pricing">
+                      <span class="cg-price-sale">{{ p.price | money }}</span>
+                    </span>
+                  </a>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+
+    </div><!-- /cg-track -->
+
+    <!-- Dot pagination -->
+    <div class="cg-dots" id="cgDots-{{ section.id }}"></div>
+  </div>
+</section>
+
+<style>
+.cg-section {
+  padding: 40px 0 20px;
+  background: #f9f6f2;
+  text-align: center;
+}
+.cg-heading {
+  font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+.cg-subheading {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #777;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+}
+/* Carousel */
+.cg-carousel {
+  position: relative;
+  overflow: hidden;
+  padding: 0 12px;
+}
+.cg-track {
+  display: flex;
+  gap: 10px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+/* Card */
+.cg-card {
+  flex: 0 0 calc(50% - 5px);
+  display: flex;
+  flex-direction: column;
+}
+.cg-card-image-wrap {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eae6e0;
+  aspect-ratio: 3/4;
+  text-decoration: none;
+}
+.cg-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.cg-card:hover .cg-card-image-wrap img {
+  transform: scale(1.03);
+}
+.cg-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #eae6e0;
+}
+/* Badges */
+.cg-badge-discount {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255,255,255,0.92);
+  color: #1a1a1a;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+}
+.cg-badge-oos {
+  position: absolute;
+  top: 38px;
+  left: 10px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+}
+/* Quick-add button */
+.cg-quick-add {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.cg-quick-add:hover {
+  background: #1a1a1a;
+}
+.cg-quick-add:hover svg {
+  stroke: #fff;
+}
+.cg-quick-add svg {
+  width: 18px;
+  height: 18px;
+  stroke: #1a1a1a;
+}
+/* Card info */
+.cg-card-info {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 4px 4px;
+  text-align: left;
+  text-decoration: none;
+}
+.cg-card-color {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #999;
+  margin-bottom: 1px;
+}
+.cg-card-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.cg-card-pricing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cg-price-sale {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #c0392b;
+}
+.cg-price-compare {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+  text-decoration: line-through;
+}
+/* Dots */
+.cg-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 4px;
+}
+.cg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.cg-dot.active {
+  background: #1a1a1a;
+}
+/* Desktop */
+@media (min-width: 750px) {
+  .cg-card { flex: 0 0 calc(25% - 8px); }
+  .cg-heading { font-size: 34px; }
+}
+@media (max-width: 749px) {
+  .cg-heading { font-size: 24px; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var sectionId = '{{ section.id }}';
+  var track = document.getElementById('cgTrack-' + sectionId);
+  var carousel = document.getElementById('cgCarousel-' + sectionId);
+  if (!track || !carousel) return;
+
+  var cards = track.querySelectorAll('.cg-card');
+  var dotsWrap = document.getElementById('cgDots-' + sectionId);
+  var currentPage = 0;
+  var cardsPerPage = window.innerWidth >= 750 ? 4 : 2;
+  var totalPages = Math.ceil(cards.length / cardsPerPage);
+
+  // Build dots
+  for (var i = 0; i < totalPages; i++) {
+    var dot = document.createElement('button');
+    dot.className = 'cg-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.addEventListener('click', function() { goToPage(parseInt(this.dataset.page)); });
+    dotsWrap.appendChild(dot);
+  }
+
+  function goToPage(page) {
+    if (page < 0) page = 0;
+    if (page >= totalPages) page = totalPages - 1;
+    var cardW = cards[0].offsetWidth + 10; // gap
+    var scrollAmount = page * cardsPerPage * cardW;
+    var maxScroll = track.scrollWidth - carousel.offsetWidth;
+    if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+    track.style.transform = 'translateX(-' + scrollAmount + 'px)';
+    currentPage = page;
+    dotsWrap.querySelectorAll('.cg-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === page);
+    });
+  }
+
+  // Touch swipe
+  var startX = 0, dragging = false, dragDx = 0;
+  carousel.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    dragging = true;
+    dragDx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+  carousel.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    var dx = e.touches[0].clientX - startX;
+    dragDx = dx;
+    var cardW = cards[0].offsetWidth + 10;
+    var base = -(currentPage * cardsPerPage * cardW);
+    track.style.transform = 'translateX(' + (base + dx) + 'px)';
+  }, { passive: true });
+  carousel.addEventListener('touchend', function() {
+    if (!dragging) return;
+    dragging = false;
+    track.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    var threshold = cards[0].offsetWidth * 0.25;
+    if (dragDx < -threshold) goToPage(currentPage + 1);
+    else if (dragDx > threshold) goToPage(currentPage - 1);
+    else goToPage(currentPage);
+    dragDx = 0;
+  }, { passive: true });
+
+  // Quick-add AJAX buttons
+  document.querySelectorAll('.cg-quick-add').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var variantId = this.dataset.variantId;
+      if (!variantId) return;
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: parseInt(variantId), quantity: 1 }] })
+      }).then(function(r) { return r.json(); })
+      .then(function() {
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
+        }, 1500);
+      });
+    });
+  });
+
+  // Recalc on resize
+  window.addEventListener('resize', function() {
+    var newCpp = window.innerWidth >= 750 ? 4 : 2;
+    if (newCpp !== cardsPerPage) {
+      cardsPerPage = newCpp;
+      totalPages = Math.ceil(cards.length / cardsPerPage);
+      dotsWrap.innerHTML = '';
+      for (var i = 0; i < totalPages; i++) {
+        var dot = document.createElement('button');
+        dot.className = 'cg-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.page = i;
+        dot.addEventListener('click', function() { goToPage(parseInt(this.dataset.page)); });
+        dotsWrap.appendChild(dot);
+      }
+      goToPage(0);
+    }
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "POPULAR RIGHT NOW"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Product limit",
+      "min": 2,
+      "max": 20,
+      "step": 2,
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product title"
+        },
+        {
+          "type": "text",
+          "id": "color",
+          "label": "Color name"
+        },
+        {
+          "type": "text",
+          "id": "sale_price",
+          "label": "Sale price",
+          "default": "$16.99"
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Compare price",
+          "default": "$36.98"
+        },
+        {
+          "type": "text",
+          "id": "discount",
+          "label": "Discount badge",
+          "default": "-54%"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Grid",
+      "settings": {
+        "heading": "POPULAR RIGHT NOW"
+      }
+    }
+  ]
+}
+{% endschema %}

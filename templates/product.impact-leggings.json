@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-leggings",
+      "settings": {
+        "review_count": "2,103",
+        "avg_rating": "4.9",
+        "total_reviews": "50+"
+      }
+    }
+  },
+  "order": ["main"]
+}

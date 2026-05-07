@@ -1,0 +1,53 @@
+<section class="main-search" style="padding: 40px 0 80px;">
+  <div class="container">
+    <h1 style="font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; text-align: center; margin-bottom: 24px;">
+      {% if search.performed %}
+        Search results for "{{ search.terms }}"
+      {% else %}
+        Search
+      {% endif %}
+    </h1>
+
+    <form action="/search" method="get" role="search" style="max-width: 600px; margin: 0 auto 40px;">
+      <div class="newsletter__form">
+        <input
+          type="search"
+          name="q"
+          class="newsletter__input"
+          value="{{ search.terms | escape }}"
+          placeholder="Search products..."
+          aria-label="Search"
+        >
+        <button type="submit" class="newsletter__submit">Search</button>
+      </div>
+      <input type="hidden" name="type" value="product">
+    </form>
+
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <p style="text-align: center; color: var(--color-text-light); margin-bottom: 32px; font-size: 0.875rem;">
+          {{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }}
+        </p>
+        <div class="product-grid">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% render 'product-card', product: item %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="text-align: center; padding: 40px 0;">
+          <p style="color: var(--color-text-light); margin-bottom: 24px;">No results found for "{{ search.terms }}"</p>
+          <a href="/collections/all" class="btn btn--primary">Browse All Products</a>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search Page",
+  "settings": []
+}
+{% endschema %}

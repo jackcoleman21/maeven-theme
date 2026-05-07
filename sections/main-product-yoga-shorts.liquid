@@ -1,0 +1,2178 @@
+{%- comment -%} Yoga Shorts Product Page — Bundle + Urgency {%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign oos_colors = '' -%}
+
+
+
+<div class="cc-product-page">
+
+<!-- Breadcrumb -->
+<nav class="cc-breadcrumb">
+  <a href="/">Home</a>
+  <span class="cc-breadcrumb-sep">·</span>
+  <span>{{ product.title }}</span>
+</nav>
+
+<!-- ═══ Main Product Row ═══ -->
+<div class="cc-product-row">
+
+<!-- ═══ Left: Gallery ═══ -->
+<div class="cc-gallery-col">
+  <div class="cc-gallery-thumbs" id="ccGalleryThumbs">
+    {%- for image in product.images -%}
+      <button class="cc-gallery-thumb{% if forloop.first %} active{% endif %}" data-thumb-index="{{ forloop.index0 }}">
+        <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | default: product.title }}" loading="lazy">
+      </button>
+    {%- endfor -%}
+  </div>
+  <div class="cc-gallery-main" id="ccGalleryMain">
+    <div class="cc-gallery-track" id="ccGalleryTrack">
+      {%- for image in product.images -%}
+        <div class="cc-gallery-slide" data-index="{{ forloop.index0 }}">
+          <img src="{{ image | image_url: width: 1200 }}" alt="{{ image.alt | default: product.title }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+        </div>
+      {%- endfor -%}
+    </div>
+    <button class="cc-gallery-arrow cc-gallery-arrow--prev" id="ccGalleryPrev" aria-label="Previous image">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="cc-gallery-arrow cc-gallery-arrow--next" id="ccGalleryNext" aria-label="Next image">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+    <div class="cc-gallery-counter" id="ccGalleryCounter">
+      <span id="ccCurrentSlide">1</span> / <span id="ccTotalSlides">{{ product.images.size }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Right: Product Info ═══ -->
+<div class="cc-info-col">
+
+  <!-- Sale Countdown Badge -->
+  <div class="is-sale-banner" id="isSaleBanner">
+    <span class="is-fire">🔥</span>
+    <span class="is-banner-label">Summer Sale Ends In</span>
+    <span class="is-countdown">
+      <span class="is-cd-num" id="isCdHours">00</span>
+      <span class="is-cd-sep">:</span>
+      <span class="is-cd-num" id="isCdMins">00</span>
+      <span class="is-cd-sep">:</span>
+      <span class="is-cd-num" id="isCdSecs">00</span>
+    </span>
+    <span class="is-fire">🔥</span>
+  </div>
+
+  <!-- Vendor -->
+  <div class="cc-vendor">{{ current_variant.option1 | default: product.vendor }}</div>
+
+  <!-- Title -->
+  <h1 class="cc-product-title">{{ product.title }}</h1>
+
+  <!-- Price -->
+  <div class="cc-price-row">
+    <span class="cc-sale-price">{{ current_variant.price | money }}</span>
+    {%- if current_variant.compare_at_price > current_variant.price -%}
+      <span class="cc-compare-price">{{ current_variant.compare_at_price | money }}</span>
+    {%- endif -%}
+  </div>
+
+  <!-- ═══ Color Swatches (Image-based) ═══ -->
+  <div class="cc-color-section">
+    <div class="cc-color-label">SELECTED OPTION</div>
+    <div class="cc-color-swatches-wrap">
+      <button class="cc-swatch-arrow cc-swatch-arrow--prev" id="ccSwatchPrev" aria-label="Previous colors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="cc-color-swatches-track" id="ccSwatchTrack">
+        {%- assign seen_colors = '' -%}
+        {%- for variant in product.variants -%}
+          {%- unless seen_colors contains variant.option1 -%}
+            {%- assign seen_colors = seen_colors | append: variant.option1 | append: '|||' -%}
+            {%- comment -%} Find the first product image matching this color {%- endcomment -%}
+            {%- assign color_image = nil -%}
+            {%- assign color_lower_find = variant.option1 | downcase -%}
+            {%- for image in product.images -%}
+              {%- assign alt_lower = image.alt | downcase -%}
+              {%- if alt_lower contains color_lower_find -%}
+                {%- unless color_image -%}
+                  {%- assign color_image = image -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- assign _is_oos = false -%}
+            {%- assign _oos_arr = oos_colors | split: ',' -%}
+            {%- for _oc in _oos_arr -%}
+              {%- assign _oc_strip = _oc | strip -%}
+              {%- if variant.option1 == _oc_strip -%}{%- assign _is_oos = true -%}{%- endif -%}
+            {%- endfor -%}
+            <button class="cc-color-swatch{% if variant.option1 == current_variant.option1 %} active{% endif %}{% if _is_oos %} oos{% endif %}"
+                    data-color="{{ variant.option1 }}"
+                    data-variant-id="{{ variant.id }}"
+                    data-available="{% if _is_oos %}false{% else %}{{ variant.available }}{% endif %}"
+                    type="button"
+                    aria-label="{{ variant.option1 }}">
+              <div class="cc-swatch-img">
+                {%- if color_image -%}
+                  <img src="{{ color_image | image_url: width: 200 }}" alt="{{ variant.option1 }}" loading="lazy">
+                {%- else -%}
+                  <div class="cc-swatch-placeholder"></div>
+                {%- endif -%}
+              </div>
+              <span class="cc-swatch-name{% if variant.option1 == current_variant.option1 %} active{% endif %}">{{ variant.option1 | upcase | truncate: 10, '...' }}</span>
+            </button>
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+      <button class="cc-swatch-arrow cc-swatch-arrow--next" id="ccSwatchNext" aria-label="Next colors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ Size Selector ═══ -->
+  <div class="cc-size-section">
+    <div class="cc-size-label">Size: <strong id="ccSizeName">{{ current_variant.option2 | default: 'XS' }}</strong></div>
+    <div class="cc-size-options">
+      {%- assign seen_sizes = '|' -%}
+      {%- for variant in product.variants -%}
+        {%- assign size_check = '|' | append: variant.option2 | append: '|' -%}
+        {%- unless seen_sizes contains size_check -%}
+          {%- assign seen_sizes = seen_sizes | append: variant.option2 | append: '|' -%}
+          <button class="cc-size-btn{% if variant.option2 == current_variant.option2 %} active{% endif %}"
+                  data-size="{{ variant.option2 }}"
+                  type="button">{{ variant.option2 }}</button>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+
+
+  <!-- ═══ Bundle Selector ═══ -->
+  {%- comment -%} Build a list of unique colors with their swatch images for the pair picker {%- endcomment -%}
+  {%- assign pair_colors = '' -%}
+  {%- assign pair_images = '' -%}
+  {%- assign seen_pair = '' -%}
+  {%- for variant in product.variants -%}
+    {%- unless seen_pair contains variant.option1 -%}
+      {%- assign seen_pair = seen_pair | append: variant.option1 | append: '|||' -%}
+      {%- assign color_img_url = '' -%}
+      {%- assign col_lower = variant.option1 | downcase -%}
+      {%- for image in product.images -%}
+        {%- assign a_lower = image.alt | downcase -%}
+        {%- if a_lower contains col_lower and color_img_url == '' -%}
+          {%- assign color_img_url = image | image_url: width: 140 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if pair_colors != '' -%}{%- assign pair_colors = pair_colors | append: '|||' -%}{%- assign pair_images = pair_images | append: '|||' -%}{%- endif -%}
+      {%- assign pair_colors = pair_colors | append: variant.option1 -%}
+      {%- assign pair_images = pair_images | append: color_img_url -%}
+    {%- endunless -%}
+  {%- endfor -%}
+  {%- assign color_arr = pair_colors | split: '|||' -%}
+  {%- assign img_arr = pair_images | split: '|||' -%}
+  {%- assign active_color = current_variant.option1 -%}
+  {%- assign active_size = current_variant.option2 | default: 'XS' -%}
+  {%- assign size_list = '' -%}
+  {%- assign seen_sz = '|' -%}
+  {%- for variant in product.variants -%}
+    {%- assign sz_check = '|' | append: variant.option2 | append: '|' -%}
+    {%- unless seen_sz contains sz_check -%}
+      {%- assign seen_sz = seen_sz | append: variant.option2 | append: '|' -%}
+      {%- if size_list != '' -%}{%- assign size_list = size_list | append: '|||' -%}{%- endif -%}
+      {%- assign size_list = size_list | append: variant.option2 -%}
+    {%- endunless -%}
+  {%- endfor -%}
+  {%- assign size_arr = size_list | split: '|||' -%}
+
+  {%- comment -%} Dynamic bundle pricing from product.price {%- endcomment -%}
+  {%- assign unit_price_cents = current_variant.price -%}
+  {%- assign unit_price_dollars = unit_price_cents | divided_by: 100.0 -%}
+  {%- assign b1g1_total_cents = unit_price_cents -%}
+  {%- assign b1g1_per_pair_cents = b1g1_total_cents | divided_by: 2 -%}
+  {%- assign b3g2_total_cents = unit_price_cents | times: 3 -%}
+  {%- assign b3g2_per_pair_cents = b3g2_total_cents | divided_by: 5 -%}
+
+  <div class="is-bundle-selector" id="isBundleSelector">
+    <!-- Tier 1: Buy 1 -->
+    <div class="is-bundle-option" data-qty="1" data-total="{{ unit_price_cents | divided_by: 100.0 }}" data-pairs="1">
+      <div class="is-bundle-top">
+        <div class="is-bundle-radio"></div>
+        <div class="is-bundle-info">
+          <div class="is-bundle-title">1 PAIR</div>
+          <div class="is-bundle-sub">Standard price</div>
+        </div>
+        <div class="is-bundle-price">{{ unit_price_cents | money }}</div>
+      </div>
+    </div>
+
+    <!-- Tier 2: Buy 2 (pre-selected) -->
+    <div class="is-bundle-option selected" data-qty="2" data-total="{{ b1g1_total_cents | divided_by: 100.0 }}" data-pairs="2">
+      <div class="is-bundle-badge">MOST POPULAR</div>
+      <div class="is-bundle-top">
+        <div class="is-bundle-radio"></div>
+        <div class="is-bundle-info">
+          <div class="is-bundle-title">2 PAIRS</div>
+          <div class="is-bundle-sub">2 pairs · {{ b1g1_per_pair_cents | money }} each</div>
+        </div>
+        <div class="is-bundle-price">{{ b1g1_total_cents | money }}</div>
+      </div>
+      <div class="is-bundle-pairs">
+        <div class="is-pair-summary">
+          <div class="is-pair-summary-text">
+            <span class="is-pair-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span>All 2 pairs in <strong class="is-pair-sync-color">{{ active_color }}</strong> · Size {{ active_size }}</span>
+          </div>
+          <button class="is-pair-toggle" type="button">Mix &amp; match ↓</button>
+        </div>
+        <div class="is-pair-expanded">
+          {%- for p in (1..2) -%}
+          <div class="is-pair-row">
+            <span class="is-pair-label">Pair {{ p }}</span>
+            <div class="is-pair-thumbs">
+              {%- for c in color_arr -%}
+                {%- assign _pair_oos = false -%}
+                {%- for _oc in _oos_arr -%}
+                  {%- assign _oc_s = _oc | strip -%}
+                  {%- if c == _oc_s -%}{%- assign _pair_oos = true -%}{%- endif -%}
+                {%- endfor -%}
+                {%- unless _pair_oos -%}
+                <button class="is-pair-thumb{% if c == active_color %} selected{% endif %}" data-color="{{ c }}" type="button" aria-label="{{ c }}">
+                  <img class="is-thumb-img" src="{{ img_arr[forloop.index0] }}" alt="{{ c }}" loading="lazy">
+                  <div class="is-thumb-name">{{ c | truncate: 8, '...' | upcase }}</div>
+                </button>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+            <div class="is-pair-sizes">
+              {%- for sz in size_arr -%}
+                <button class="is-pair-size-chip{% if sz == active_size %} selected{% endif %}" data-size="{{ sz }}" type="button">{{ sz }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 3: Buy 5 -->
+    <div class="is-bundle-option" data-qty="5" data-total="{{ b3g2_total_cents | divided_by: 100.0 }}" data-pairs="5">
+      <div class="is-bundle-badge is-badge-value">BEST VALUE</div>
+      <div class="is-bundle-top">
+        <div class="is-bundle-radio"></div>
+        <div class="is-bundle-info">
+          <div class="is-bundle-title">5 PAIRS</div>
+          <div class="is-bundle-sub">5 pairs · {{ b3g2_per_pair_cents | money }} each</div>
+        </div>
+        <div class="is-bundle-price">{{ b3g2_total_cents | money }}</div>
+      </div>
+      <div class="is-bundle-pairs">
+        <div class="is-pair-summary">
+          <div class="is-pair-summary-text">
+            <span class="is-pair-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span>All 5 pairs in <strong class="is-pair-sync-color">{{ active_color }}</strong> · Size {{ active_size }}</span>
+          </div>
+          <button class="is-pair-toggle" type="button">Mix &amp; match ↓</button>
+        </div>
+        <div class="is-pair-expanded">
+          {%- for p in (1..5) -%}
+          <div class="is-pair-row">
+            <span class="is-pair-label">Pair {{ p }}</span>
+            <div class="is-pair-thumbs">
+              {%- for c in color_arr -%}
+                {%- assign _pair_oos = false -%}
+                {%- for _oc in _oos_arr -%}
+                  {%- assign _oc_s = _oc | strip -%}
+                  {%- if c == _oc_s -%}{%- assign _pair_oos = true -%}{%- endif -%}
+                {%- endfor -%}
+                {%- unless _pair_oos -%}
+                <button class="is-pair-thumb{% if c == active_color %} selected{% endif %}" data-color="{{ c }}" type="button" aria-label="{{ c }}">
+                  <img class="is-thumb-img" src="{{ img_arr[forloop.index0] }}" alt="{{ c }}" loading="lazy">
+                  <div class="is-thumb-name">{{ c | truncate: 8, '...' | upcase }}</div>
+                </button>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+            <div class="is-pair-sizes">
+              {%- for sz in size_arr -%}
+                <button class="is-pair-size-chip{% if sz == active_size %} selected{% endif %}" data-size="{{ sz }}" type="button">{{ sz }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Add to Cart + Shop Pay + More ═══ -->
+  <form method="post" action="/cart/add" id="cc-product-form" class="is-actions-stack">
+    <input type="hidden" name="id" id="cc-variant-id" value="{{ current_variant.id }}">
+    <input type="hidden" name="quantity" id="cc-quantity" value="2">
+    <button type="submit" class="is-atc-btn" id="cc-atc-btn">Add to Cart</button>
+  </form>
+  {%- form 'product', product, id: 'cc-dynamic-checkout-form' -%}
+    <input type="hidden" name="id" value="{{ current_variant.id }}">
+    <div class="is-shopify-payment">
+      {{ form | payment_button }}
+    </div>
+  {%- endform -%}
+
+  <!-- Stock Warning -->
+  <div class="cc-stock-msg" id="ccStockMsg">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    Hurry up! Only <strong id="ccStockCount">94</strong> item(s) left in stock
+  </div>
+
+  <!-- Payment Trust Icons -->
+  <div class="cc-trust-payments">
+    {%- for type in shop.enabled_payment_types -%}
+      {{ type | payment_type_svg_tag: class: 'cc-pay-icon' }}
+    {%- endfor -%}
+  </div>
+
+  <!-- ═══ Frequently Bought Together ═══ -->
+  {% render 'cross-sell', cross_handle_1: 'impact-shorts-4-5', cross_handle_2: 'impact-leggings' %}
+
+  <!-- ═══ Description Accordion ═══ -->
+  <div class="cc-accordions">
+    <div class="cc-acc-item cc-acc-open">
+      <button class="cc-acc-trigger" type="button">
+        <span>Description</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </button>
+      <div class="cc-acc-content" style="max-height:600px">
+        <div class="cc-acc-inner">
+          <p><strong>Features</strong></p>
+          <p>Seamless design | High stretch & durable fabric | Low ribbed band | Subtle glute contour | Incredibly soft feel | 4.5" leg length | 90% Nylon | 10% Elastane</p>
+          <p><strong>Fit</strong> – Firm at True to Size. Size up for a more relaxed fit.</p>
+          <p>Make your IMPACT in our 4.5" Shorts. Designed with subtle contouring and a scrunch seam to highlight your glute day pump. The low waistband structure gently dips down for ultimate comfort and core support while subtly highlighting the muscles you have worked so hard to build.</p>
+          <p><strong>Care Instructions</strong></p>
+          <p>Cool Wash Separately (30°C) | Cool Tumble Dry | Do Not Dry Clean or Bleach | Cool Iron</p>
+        </div>
+      </div>
+    </div>
+    <div class="cc-acc-item">
+      <button class="cc-acc-trigger" type="button">
+        <span>Shipping and Returns</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div class="cc-acc-content">
+        <div class="cc-acc-inner">
+          <p>We offer fast and reliable shipping on all orders. Once your order is placed, it will be processed and shipped as quickly as possible so you can start training in your new gear.</p>
+          <p>Expedited shipping options may be available at checkout. If you have any questions about your order, don't hesitate to reach out to our support team.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cc-acc-item">
+      <button class="cc-acc-trigger" type="button">
+        <span>Size Guide</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div class="cc-acc-content">
+        <div class="cc-acc-inner">
+          <p>Measure your natural waist (narrowest point) and hips (widest point around glutes). These yoga shorts run firm at true-to-size for a compression fit. If you fall between 2 sizes, size up for a more relaxed feel, or stay true-to-size for maximum hold and support.</p>
+          <table class="cc-size-chart">
+            <thead><tr><th>Size</th><th>US Size</th><th>Waist</th><th>Hips</th></tr></thead>
+            <tbody>
+              <tr><td>XS</td><td>0–2</td><td>24–25"</td><td>34–35"</td></tr>
+              <tr><td>S</td><td>4–6</td><td>26–27"</td><td>36–37"</td></tr>
+              <tr><td>M</td><td>8–10</td><td>28–29"</td><td>38–39"</td></tr>
+              <tr><td>L</td><td>12–14</td><td>30–32"</td><td>40–42"</td></tr>
+              <tr><td>XL</td><td>16–18</td><td>33–35"</td><td>43–45"</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /cc-info-col -->
+</div><!-- /cc-product-row -->
+
+<!-- ═══ Full-width sections below ═══ -->
+
+<!-- ═══ Brand Statement ═══ -->
+<section class="bp-statement">
+  <div class="bp-statement-inner">
+    <div class="bp-statement-accent"></div>
+    <h2 class="bp-statement-title">2-in-1 Yoga Shorts</h2>
+    <p class="bp-statement-tagline">Flow. Stretch. Dominate. No Compromise.</p>
+    <p class="bp-statement-body">Maeven™ 2-in-1 Yoga Shorts are designed for women who flow hard and want total coverage doing it. The built-in liner, super high waist, and hidden pockets mean you can move through any pose with zero distractions.</p>
+  </div>
+</section>
+
+<!-- ═══ Transformation Comparison ═══ -->
+<section class="bp-transform">
+  <h2 class="bp-section-heading">The Transformation You'll See</h2>
+  <div class="bp-transform-grid">
+    <div class="bp-transform-card bp-transform-without">
+      <div class="bp-transform-label">Without Maeven™</div>
+      <ul class="bp-transform-list">
+        <li><span class="bp-bullet bp-bullet-x">✕</span>Yoga shorts with zero pockets</li>
+        <li><span class="bp-bullet bp-bullet-x">✕</span>See-through fabric during deep stretches</li>
+        <li><span class="bp-bullet bp-bullet-x">✕</span>Low waistbands that roll during inversions</li>
+        <li><span class="bp-bullet bp-bullet-x">✕</span>No liner coverage when you need it most</li>
+      </ul>
+    </div>
+    <div class="bp-transform-card bp-transform-with">
+      <div class="bp-transform-label">With Maeven™</div>
+      <ul class="bp-transform-list">
+        <li><span class="bp-bullet bp-bullet-check">✓</span>Super high waist that stays put through flows</li>
+        <li><span class="bp-bullet bp-bullet-check">✓</span>Built-in liner, 100% coverage</li>
+        <li><span class="bp-bullet bp-bullet-check">✓</span>Back pocket & side hidden pocket</li>
+        <li><span class="bp-bullet bp-bullet-check">✓</span>Four-way stretch, buttery soft fabric</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Feature Grid ═══ -->
+<section class="bp-features">
+  <h2 class="bp-section-heading">Designed for Women Who Train</h2>
+  <div class="bp-features-grid">
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">01</div>
+      <h3 class="bp-feature-name">2-in-1 Built-In Liner</h3>
+      <p class="bp-feature-desc">Inner compression shorts provide full coverage during any pose — no more worrying about deep stretches or inversions.</p>
+    </div>
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">02</div>
+      <h3 class="bp-feature-name">Hidden Pockets</h3>
+      <p class="bp-feature-desc">Back waistband pocket for your card/key plus side hidden pocket for your phone. Secure and seamless — nothing bounces.</p>
+    </div>
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">03</div>
+      <h3 class="bp-feature-name">Super High Waist</h3>
+      <p class="bp-feature-desc">Tummy-smoothing high-rise band stays locked in through flows, folds, and inversions — zero rolling, zero adjusting.</p>
+    </div>
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">04</div>
+      <h3 class="bp-feature-name">Four-Way Stretch</h3>
+      <p class="bp-feature-desc">Premium single-sided brushed fabric moves with you in every direction. 75% Nylon 25% Elastane for the perfect balance.</p>
+    </div>
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">05</div>
+      <h3 class="bp-feature-name">Buttery Soft Fabric</h3>
+      <p class="bp-feature-desc">Single-sided brushed finish feels like butter on your skin. Sweat-wicking, breathable, and built for all-day comfort.</p>
+    </div>
+    <div class="bp-feature-card">
+      <div class="bp-feature-num">06</div>
+      <h3 class="bp-feature-name">6 Colors</h3>
+      <p class="bp-feature-desc">From calming Sky Latte and Lavender Milk to classic Noir Black and Denim Sky — match your mat vibes effortlessly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Gym Day Ritual ═══ -->
+<section class="bp-ritual">
+  <h2 class="bp-section-heading">Your Flow Day Ritual</h2>
+  <p class="bp-ritual-subtitle">Three steps to looking and feeling unstoppable</p>
+  <div class="bp-ritual-steps">
+    <div class="bp-ritual-step">
+      <div class="bp-ritual-circle">01</div>
+      <h3 class="bp-ritual-step-title">Slip On</h3>
+      <p class="bp-ritual-step-desc">Pull on your Yoga Shorts and feel the instant high-waisted hug. The built-in liner sits secure with zero adjustment needed.</p>
+    </div>
+    <div class="bp-ritual-step">
+      <div class="bp-ritual-circle">02</div>
+      <h3 class="bp-ritual-step-title">Flow Free</h3>
+      <p class="bp-ritual-step-desc">Yoga, pilates, barre, runs — these shorts move with every flow. No riding up, no waistband rolling, no liner shifting.</p>
+    </div>
+    <div class="bp-ritual-step">
+      <div class="bp-ritual-circle">03</div>
+      <h3 class="bp-ritual-step-title">Turn Heads</h3>
+      <p class="bp-ritual-step-desc">Walk out of the studio feeling put-together. The 6 soft-toned colors and flattering high waist make every outfit effortless.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ UGC Review Carousel ═══ -->
+<section class="bp-ugc-section">
+  <h2 class="bp-section-heading">Loved by Women Who Train</h2>
+  <div class="bp-ugc-carousel" id="bpUgcCarousel">
+    <div class="bp-ugc-track" id="bpUgcTrack">
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/2_dafcd7f8-18eb-4aee-806f-ca86fef4dcba.png?v=1761640160&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"Finally yoga shorts with POCKETS that actually work. My phone doesn't bounce and the liner means I can bend into any pose without worrying."</p>
+          <span class="bp-ugc-author">— Maya K.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/quality_restoration_20250915110527056.png?v=1761639914&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"The high waist is everything. It doesn't roll during any pose and the brushed fabric feels like butter. Lavender Milk is the prettiest color."</p>
+          <span class="bp-ugc-author">— Ava J.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/12_b547d840-d0c6-4fa0-ad8b-701aaefd13c8.png?v=1761642615&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"I wore these for a 10k and they were incredible. The side pocket held my phone perfectly and the liner stayed in place the entire run."</p>
+          <span class="bp-ugc-author">— Grace R.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/10_e028fd08-4133-477a-a200-a03a9585710b.png?v=1761642658&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"I'm a yoga instructor and these are the only shorts I recommend to my students. The coverage during inversions is unmatched."</p>
+          <span class="bp-ugc-author">— Sofia M.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/27_24c61e38-1934-4f66-a178-ff98a8cb02ea.png?v=1761645478&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"Bought all 6 colors. Not joking. I wore one pair, fell in love, and immediately ordered the rest."</p>
+          <span class="bp-ugc-author">— Emily R.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/32_1a48338d-4ef8-48f1-bfe3-520ad298ad0e.png?v=1761643989&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"Yoga girls: the liner stays put through every inversion, the waist never rolls, and they look amazing. Just buy them."</p>
+          <span class="bp-ugc-author">— Lily W.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/1_49650e4c-ad3e-48a6-83af-36fbb52a8c46.jpg?v=1761645373&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"These shorts hug in all the right places. I wore them for hot yoga and they didn't slide once. The pockets are a game-changer."</p>
+          <span class="bp-ugc-author">— Ava J.</span>
+        </div>
+      </div>
+      <div class="bp-ugc-slide">
+        <div class="bp-ugc-img"><img src="https://coralcanton.com/cdn/shop/files/11_bf23b159-f459-4255-9bd9-7f9c4de69c3d.png?v=1761640186&width=600" alt="Customer review" loading="lazy"></div>
+        <div class="bp-ugc-review">
+          <div class="bp-ugc-stars">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.94 6.48L22 9.27l-5.04 4.58L18.18 21 12 17.27 5.82 21l1.22-7.15L2 9.27l7.06-.79L12 2z"/></svg>{%- endfor -%}</div>
+          <p class="bp-ugc-text">"Can't believe I paid $80 for Lululemon when these exist. Better fabric, better pockets, better price."</p>
+          <span class="bp-ugc-author">— Grace T.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="bp-faq">
+  <h2 class="bp-section-heading">Questions? We've Got Answers</h2>
+  <div class="bp-faq-list">
+    <details class="bp-faq-item"><summary class="bp-faq-q">Does the liner ride up?</summary><p class="bp-faq-a">No! The built-in compression liner stays locked in during any movement — inversions, deep squats, running. Full coverage, zero adjusting.</p></details>
+    <details class="bp-faq-item"><summary class="bp-faq-q">What size should I get?</summary><p class="bp-faq-a">They run firm at true-to-size for a compression fit. If you're between sizes or prefer a more relaxed feel, we recommend sizing up one size.</p></details>
+    <details class="bp-faq-item"><summary class="bp-faq-q">Will my phone fit in the pocket?</summary><p class="bp-faq-a">Yes! The side hidden pocket fits phones up to iPhone 15 Pro Max size. The back pocket is great for cards, keys, or AirPods.</p></details>
+    <details class="bp-faq-item"><summary class="bp-faq-q">What workouts are they good for?</summary><p class="bp-faq-a">Everything — yoga, pilates, barre, running, HIIT, cycling, and everyday athleisure. The four-way stretch and 2-in-1 design handle any activity.</p></details>
+    <details class="bp-faq-item"><summary class="bp-faq-q">Do they show sweat marks?</summary><p class="bp-faq-a">The sweat-wicking fabric handles moisture incredibly well. Most colors hide sweat completely. Darker colors perform best for heavy sessions.</p></details>
+    <details class="bp-faq-item"><summary class="bp-faq-q">How do I wash them?</summary><p class="bp-faq-a">Cool wash separately (30°C), cool tumble dry. Do not bleach or dry clean. They maintain their shape and compression wash after wash.</p></details>
+  </div>
+</section>
+
+<!-- ═══ Dark CTA Block ═══ -->
+<div class="bp-dark-cta">
+  <p class="bp-dark-cta-label">Ready to feel the difference?</p>
+  <p class="bp-dark-cta-text">Experience the difference Maeven Yoga Shorts make from your first flow.</p>
+  <button class="bp-dark-cta-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Get Your Yoga Shorts Today</button>
+</div>
+
+<!-- ═══ Scroll to Top ═══ -->
+
+</div><!-- /cc-product-page -->
+
+<style>
+/* ═══════════════════════════════════
+   IMPACT SHORTS — PRODUCT PAGE
+   ═══════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ═══ Sale Countdown Badge (inline) ═══ */
+.is-sale-banner {
+  background:linear-gradient(90deg, #d8111b 0%, #a50a10 50%, #d8111b 100%);
+  background-size:200% 100%;
+  color:#fff;
+  padding:10px 16px;
+  display:inline-flex; align-items:center;
+  gap:8px;
+  font-family:'Inter', sans-serif;
+  font-size:12px; font-weight:800;
+  letter-spacing:0.7px;
+  text-transform:uppercase;
+  border-radius:8px;
+  animation:isBannerShine 3s linear infinite;
+  user-select:none;
+  margin-bottom:8px;
+}
+@keyframes isBannerShine {
+  0%   { background-position:200% 0; }
+  100% { background-position:-200% 0; }
+}
+.is-fire {
+  font-size:16px; display:inline-block;
+  animation:isFlameFlicker 0.55s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 4px rgba(255,180,0,0.6));
+}
+@keyframes isFlameFlicker {
+  from { transform:rotate(-7deg) scale(1); }
+  to   { transform:rotate(7deg) scale(1.12); }
+}
+.is-banner-label { white-space:nowrap; }
+.is-countdown {
+  display:inline-flex; align-items:center; gap:3px;
+  font-variant-numeric:tabular-nums;
+}
+.is-cd-num {
+  display:inline-flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.42);
+  padding:3px 6px; border-radius:4px;
+  min-width:26px; font-weight:800;
+  font-size:13px; letter-spacing:0.5px;
+}
+.is-cd-sep { font-weight:800; opacity:0.9; padding:0 1px; }
+.is-cd-num.is-tick { animation:isTickPulse 0.4s ease-out; }
+@keyframes isTickPulse {
+  0%   { transform:scale(1); background:rgba(255,255,255,0.25); }
+  100% { transform:scale(1); background:rgba(0,0,0,0.42); }
+}
+
+/* ═══ Bundle Selector ═══ */
+.is-bundle-selector { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.is-bundle-option {
+  position:relative; display:flex; flex-direction:column;
+  padding:16px; background:#fff;
+  border:2px solid #e5e5e5; border-radius:8px;
+  cursor:pointer; transition:border-color 0.15s, background 0.15s;
+}
+.is-bundle-option:hover { border-color:#9a9a9a; }
+.is-bundle-option.selected { border-color:#000; background:#fafafa; }
+.is-bundle-top { display:flex; align-items:center; gap:14px; }
+.is-bundle-radio {
+  width:20px; height:20px;
+  border:2px solid #c4c4c4; border-radius:50%;
+  flex-shrink:0; position:relative; background:#fff;
+  transition:border-color 0.15s;
+}
+.is-bundle-option.selected .is-bundle-radio { border-color:#000; }
+.is-bundle-option.selected .is-bundle-radio::after {
+  content:''; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:10px; height:10px; border-radius:50%; background:#000;
+}
+.is-bundle-info { flex:1; min-width:0; }
+.is-bundle-title { font-size:14px; font-weight:700; color:#000; letter-spacing:0.4px; line-height:1.2; }
+.is-bundle-sub { font-size:12px; color:#6e6e6e; margin-top:4px; font-weight:500; }
+.is-bundle-price { font-size:16px; font-weight:700; color:#000; flex-shrink:0; }
+.is-bundle-badge {
+  position:absolute; top:-9px; right:14px;
+  padding:3px 8px; background:#000; color:#fff;
+  font-size:10px; font-weight:700; letter-spacing:0.6px;
+  border-radius:3px; line-height:1.4;
+}
+.is-badge-value { background:#E22929; }
+
+/* Bundle headline */
+.is-bundle-headline { font-size:13px; font-weight:600; color:#1a1a1a; margin:0 0 10px; letter-spacing:0.2px; }
+/* Price stack (was + current) */
+.is-bundle-price-stack { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; gap:1px; }
+.is-bundle-was { font-size:12px; color:#999; text-decoration:line-through; font-weight:400; }
+/* Savings accent */
+.is-bundle-save { color:#E22929; font-weight:700; }
+
+/* Per-pair color picker */
+.is-bundle-pairs {
+  display:none; flex-direction:column;
+  margin-top:14px; padding-top:14px;
+  border-top:1px solid #ececec;
+}
+.is-bundle-option.selected .is-bundle-pairs { display:flex; }
+.is-pair-summary {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px;
+}
+.is-pair-summary-text {
+  font-size:13px; color:#555; line-height:1.3;
+  display:flex; align-items:center; gap:8px;
+  flex:1; min-width:0;
+}
+.is-pair-summary-text strong { color:#000; font-weight:700; }
+.is-pair-check {
+  width:16px; height:16px; border-radius:50%;
+  background:#18a957; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.is-pair-check svg { width:10px; height:10px; }
+.is-pair-toggle {
+  background:none; border:none; padding:4px 0;
+  font-size:12px; font-weight:700; color:#000;
+  text-decoration:underline; text-underline-offset:3px;
+  cursor:pointer; font-family:inherit;
+  white-space:nowrap; flex-shrink:0;
+}
+.is-pair-expanded {
+  display:none; flex-direction:column; gap:14px;
+  margin-top:14px;
+}
+.is-pair-expanded.open { display:flex; }
+.is-pair-row { display:flex; flex-direction:column; gap:8px; }
+.is-pair-label {
+  font-size:11px; font-weight:700; color:#6e6e6e;
+  letter-spacing:0.8px; text-transform:uppercase;
+}
+.is-pair-thumbs {
+  display:flex; gap:6px; overflow-x:auto;
+  scrollbar-width:none; -ms-overflow-style:none;
+  padding-bottom:2px; scroll-snap-type:x mandatory;
+}
+.is-pair-thumbs::-webkit-scrollbar { display:none; }
+.is-pair-thumb {
+  flex:0 0 54px; position:relative;
+  border-radius:4px; overflow:hidden;
+  cursor:pointer; background:none; padding:0;
+  scroll-snap-align:start;
+  border:2px solid transparent;
+  transition:border-color 0.12s;
+}
+.is-pair-thumb.selected { border-color:#000; }
+.is-thumb-img {
+  width:100%; aspect-ratio:54/78; display:block;
+  object-fit:cover;
+}
+.is-thumb-name {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:3px 4px; font-size:8px; font-weight:700;
+  color:#000; background:#fff;
+  text-transform:uppercase; letter-spacing:0.3px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  text-align:center;
+}
+.is-pair-thumb.selected .is-thumb-name { background:#000; color:#fff; }
+
+/* Per-pair size chips */
+.is-pair-sizes {
+  display:flex; gap:6px; margin-top:6px;
+  overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;
+  padding-bottom:2px;
+}
+.is-pair-sizes::-webkit-scrollbar { display:none; }
+.is-pair-size-chip {
+  flex:0 0 auto; min-width:40px; height:32px;
+  padding:0 10px; border:1px solid #d9d9d9; border-radius:4px;
+  background:#fff; font-family:'Inter', sans-serif;
+  font-size:12px; font-weight:600; color:#000;
+  cursor:pointer; transition:all 0.12s;
+  display:flex; align-items:center; justify-content:center;
+}
+.is-pair-size-chip:hover { border-color:#000; }
+.is-pair-size-chip.selected { background:#000; color:#fff; border-color:#000; }
+
+/* ═══ Action Buttons Stack ═══ */
+.is-actions-stack { margin-bottom:0; }
+.is-atc-btn {
+  width:100%; height:52px; background:#000; color:#fff;
+  border:none; border-radius:999px;
+  font-family:'Inter', sans-serif;
+  font-size:17px; font-weight:700; cursor:pointer;
+  margin-bottom:10px; transition:background 0.2s;
+}
+.is-atc-btn:hover { background:#333; }
+.is-atc-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.is-shopify-payment { margin-bottom:10px; }
+.is-shopify-payment .shopify-payment-button__button { border-radius:999px !important; height:52px !important; }
+.is-shopify-payment .shopify-payment-button__button--unbranded {
+  background:#5A31F4 !important; border-radius:999px !important;
+}
+.is-shopify-payment .shopify-payment-button__more-options {
+  background:#000 !important; color:#fff !important;
+  border-radius:999px !important; height:52px !important;
+  font-size:15px !important; font-weight:600 !important;
+  text-decoration:underline !important; text-underline-offset:3px !important;
+}
+
+.cc-product-page {
+  max-width:1340px;
+  margin:0 auto;
+  padding:0 20px 60px;
+  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  color:#1a1a1a;
+  background:#fff;
+  overflow-x:clip;
+}
+* { box-sizing:border-box; }
+
+/* Breadcrumb */
+.cc-breadcrumb { font-size:13px; color:#888; padding:16px 0; }
+.cc-breadcrumb a { color:#888; text-decoration:none; }
+.cc-breadcrumb a:hover { color:#1a1a1a; }
+.cc-breadcrumb-sep { margin:0 8px; }
+
+/* ═══ Product Row ═══ */
+.cc-product-row {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:32px;
+  overflow-x:clip;
+  max-width:100%;
+}
+
+/* ═══ Gallery Column ═══ */
+.cc-gallery-col {
+  display:flex;
+  gap:12px;
+  position:relative;
+}
+
+/* Thumbnail strip (vertical, desktop) */
+.cc-gallery-thumbs {
+  display:none;
+  flex-direction:column;
+  gap:8px;
+  width:72px;
+  flex-shrink:0;
+  overflow-y:auto;
+  max-height:600px;
+}
+.cc-gallery-thumb {
+  width:72px;
+  height:72px;
+  border:2px solid transparent;
+  border-radius:4px;
+  overflow:hidden;
+  cursor:pointer;
+  background:none;
+  padding:0;
+  transition:border-color .2s;
+  flex-shrink:0;
+}
+.cc-gallery-thumb.active { border-color:#1a1a1a; }
+.cc-gallery-thumb:hover { border-color:#999; }
+.cc-gallery-thumb img { width:100%; height:100%; object-fit:cover; }
+
+/* Main gallery */
+.cc-gallery-main {
+  flex:1;
+  min-width:0;
+  position:relative;
+  overflow:hidden;
+  border-radius:6px;
+  background:#f5f5f5;
+}
+.cc-gallery-track {
+  display:flex;
+  will-change:transform;
+  transition:transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.cc-gallery-slide {
+  flex:0 0 100%;
+  min-width:100%;
+}
+.cc-gallery-slide img {
+  width:100%;
+  height:auto;
+  display:block;
+}
+.cc-gallery-arrow {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  transition:all 0.2s;
+}
+.cc-gallery-arrow:hover { box-shadow:0 4px 16px rgba(0,0,0,0.18); }
+.cc-gallery-arrow svg { width:18px; height:18px; color:#1a1a1a; }
+.cc-gallery-arrow--prev { left:10px; }
+.cc-gallery-arrow--next { right:10px; }
+.cc-gallery-counter {
+  position:absolute;
+  bottom:12px;
+  right:12px;
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  font-size:12px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:12px;
+  z-index:10;
+}
+
+/* ═══ Info Column ═══ */
+.cc-info-col {
+  padding:0;
+  overflow-x:hidden;
+  overflow-y:visible;
+  max-width:100%;
+  min-width:0;
+}
+
+/* Discount badge */
+.cc-discount-badge {
+  display:inline-block;
+  font-size:14px;
+  font-weight:600;
+  color:#1a1a1a;
+  margin-bottom:8px;
+}
+
+/* Vendor */
+.cc-vendor {
+  font-size:14px;
+  color:#888;
+  margin-bottom:4px;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
+/* Title */
+.cc-product-title {
+  font-family:'Inter', system-ui, sans-serif;
+  font-size:28px;
+  font-weight:700;
+  line-height:1.2;
+  margin:0 0 16px;
+}
+
+/* Price */
+.cc-price-row {
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:28px;
+}
+.cc-sale-price {
+  font-size:28px;
+  font-weight:700;
+  color:#E53E3E;
+}
+.cc-compare-price {
+  font-size:24px;
+  font-weight:400;
+  color:#aaa;
+  text-decoration:line-through;
+}
+
+/* ═══ Color Swatches (Image-based carousel) ═══ */
+.cc-color-section {
+  margin-bottom:28px;
+  overflow:hidden;
+  max-width:100%;
+}
+.cc-color-label {
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:#555;
+  margin-bottom:12px;
+}
+.cc-color-swatches-wrap {
+  display:flex;
+  align-items:center;
+  gap:0;
+  position:relative;
+  overflow:hidden;
+  max-width:100%;
+}
+.cc-swatch-arrow {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.9);
+  border:1px solid #e0e0e0;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  z-index:2;
+  transition:all 0.2s;
+}
+.cc-swatch-arrow:hover { background:#f0f0f0; border-color:#ccc; }
+.cc-swatch-arrow svg { width:16px; height:16px; color:#333; }
+.cc-color-swatches-track {
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  padding:4px 8px;
+  flex:1;
+  min-width:0;
+  max-width:100%;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+.cc-color-swatches-track::-webkit-scrollbar { display:none; }
+.cc-color-swatch {
+  flex-shrink:0;
+  width:90px;
+  cursor:pointer;
+  border:none;
+  background:none;
+  padding:0;
+  text-align:center;
+  transition:all 0.2s;
+}
+.cc-swatch-img {
+  width:90px;
+  height:110px;
+  border-radius:4px;
+  overflow:hidden;
+  border:2px solid transparent;
+  transition:border-color 0.2s;
+  background:#f5f5f5;
+  position:relative;
+}
+.cc-color-swatch.active .cc-swatch-img,
+.cc-color-swatch:hover .cc-swatch-img {
+  border-color:#1a1a1a;
+}
+.cc-swatch-img img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.cc-swatch-placeholder {
+  width:100%;
+  height:100%;
+  background:#ddd;
+}
+.cc-swatch-name {
+  display:block;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.06em;
+  color:#888;
+  margin-top:4px;
+  padding:2px 4px;
+  border-radius:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.cc-swatch-name.active,
+.cc-color-swatch.active .cc-swatch-name {
+  background:#1a1a1a;
+  color:#fff;
+}
+/* Out of stock swatch */
+.cc-color-swatch.oos { opacity:.45; position:relative; pointer-events:auto; }
+.cc-color-swatch.oos .cc-swatch-img::after {
+  content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+  background:linear-gradient(135deg, transparent 45%, rgba(0,0,0,.35) 45%, rgba(0,0,0,.35) 55%, transparent 55%);
+}
+
+/* ═══ Size Selector ═══ */
+.cc-size-section {
+  margin-bottom:20px;
+}
+.cc-size-label {
+  font-size:14px;
+  color:#555;
+  margin-bottom:12px;
+}
+.cc-size-label strong {
+  color:#1a1a1a;
+  font-weight:700;
+}
+.cc-size-options {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.cc-size-btn {
+  min-width:56px;
+  height:44px;
+  padding:0 16px;
+  border:1px solid #ddd;
+  border-radius:4px;
+  background:#fff;
+  font-family:'Inter', sans-serif;
+  font-size:14px;
+  font-weight:500;
+  color:#1a1a1a;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.cc-size-btn:hover { border-color:#1a1a1a; }
+.cc-size-btn.active {
+  background:#1a1a1a;
+  color:#fff;
+  border-color:#1a1a1a;
+}
+
+/* Meta links */
+.cc-meta-links {
+  display:flex;
+  gap:24px;
+  margin-bottom:24px;
+  padding-top:4px;
+}
+.cc-meta-link {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:none;
+  border:none;
+  font-family:'Inter', sans-serif;
+  font-size:13px;
+  color:#555;
+  cursor:pointer;
+  padding:0;
+}
+.cc-meta-link:hover { color:#1a1a1a; }
+.cc-meta-link svg { width:18px; height:18px; }
+
+/* ═══ Quantity + ATC ═══ */
+.cc-atc-row {
+  display:flex;
+  gap:12px;
+  margin-bottom:12px;
+}
+.cc-qty-selector {
+  display:flex;
+  align-items:center;
+  border:1px solid #ddd;
+  border-radius:30px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.cc-qty-btn {
+  width:44px;
+  height:52px;
+  background:none;
+  border:none;
+  font-size:18px;
+  color:#1a1a1a;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:background 0.2s;
+}
+.cc-qty-btn:hover { background:#f5f5f5; }
+.cc-qty-input {
+  width:40px;
+  height:52px;
+  border:none;
+  text-align:center;
+  font-family:'Inter', sans-serif;
+  font-size:16px;
+  font-weight:500;
+  background:none;
+  -moz-appearance:textfield;
+  outline:none;
+}
+.cc-qty-input::-webkit-outer-spin-button,
+.cc-qty-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.cc-atc-form { flex:1; }
+.cc-atc-btn {
+  width:100%;
+  height:52px;
+  background:#1a1a1a;
+  color:#fff;
+  border:none;
+  border-radius:30px;
+  font-family:'Inter', sans-serif;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.3s;
+  letter-spacing:0.02em;
+}
+.cc-atc-btn:hover { background:#333; }
+.cc-atc-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* Dynamic Checkout */
+.cc-dynamic-checkout { display:none; }
+.cc-shopify-payment-button { margin-bottom:16px; }
+.cc-shopify-payment-button .shopify-payment-button__button { border-radius:30px !important; height:52px !important; }
+.cc-shopify-payment-button .shopify-payment-button__button--unbranded {
+  background:#5A31F4 !important;
+  border-radius:30px !important;
+}
+.cc-shopify-payment-button .shopify-payment-button__more-options {
+  background:#1a1a1a !important;
+  color:#fff !important;
+  border-radius:30px !important;
+  height:52px !important;
+  font-family:'Inter', sans-serif !important;
+  font-size:14px !important;
+}
+
+/* Stock message */
+.cc-stock-msg {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:500;
+  color:#E53E3E;
+  margin-bottom:28px;
+  padding:10px 0;
+}
+.cc-stock-msg svg { width:18px; height:18px; flex-shrink:0; }
+
+/* Payment Trust Icons */
+.cc-trust-payments { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:0 0 20px; }
+.cc-trust-payments svg, .cc-pay-icon { height:22px; width:auto; }
+
+/* Cross-sell */
+.cc-cross-sell { padding:20px 0 24px; border-top:1px solid var(--border-light,#eee); }
+.cc-cross-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:600; margin:0 0 14px; }
+.cc-cross-cards { display:flex; gap:12px; }
+.cc-cross-card { display:flex; align-items:center; gap:12px; padding:12px; border:1px solid var(--border-light,#eee); border-radius:10px; text-decoration:none; color:inherit; flex:1; transition:border-color .2s,box-shadow .2s; }
+.cc-cross-card:hover { border-color:var(--noir,#1a1a1a); box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+.cc-cross-img { width:56px; height:56px; border-radius:8px; overflow:hidden; flex-shrink:0; background:#f5f5f5; }
+.cc-cross-img img { width:100%; height:100%; object-fit:cover; }
+.cc-cross-info { display:flex; flex-direction:column; gap:2px; }
+.cc-cross-name { font-size:13px; font-weight:600; line-height:1.3; }
+.cc-cross-price { font-size:13px; font-weight:700; color:var(--noir,#1a1a1a); }
+.cc-cross-compare { font-size:11px; color:var(--pierre,#999); text-decoration:line-through; }
+@media(max-width:480px){ .cc-cross-cards { flex-direction:column; } }
+
+/* ═══ Accordions ═══ */
+.cc-accordions {
+  border-top:1px solid #e5e5e5;
+}
+.cc-acc-item {
+  border-bottom:1px solid #e5e5e5;
+}
+.cc-acc-trigger {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  padding:20px 0;
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-family:'Inter', sans-serif;
+  font-size:16px;
+  font-weight:600;
+  color:#1a1a1a;
+}
+.cc-acc-trigger svg { width:18px; height:18px; color:#888; transition:transform .3s; flex-shrink:0; }
+.cc-acc-trigger.open svg { transform:rotate(90deg); }
+.cc-acc-content {
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.cc-acc-inner {
+  padding:0 0 20px;
+  font-size:14px;
+  font-weight:400;
+  color:#555;
+  line-height:1.8;
+}
+.cc-acc-inner p { margin:0 0 12px; }
+.cc-acc-inner p:last-child { margin-bottom:0; }
+.cc-acc-inner strong { color:#1a1a1a; }
+
+/* Size chart table */
+.cc-size-chart {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+  font-size:13px;
+}
+.cc-size-chart th {
+  text-align:left;
+  font-weight:600;
+  padding:8px 12px;
+  background:#f5f5f5;
+  border:1px solid #e5e5e5;
+}
+.cc-size-chart td {
+  padding:8px 12px;
+  border:1px solid #e5e5e5;
+}
+
+/* ═══ Shared Section Heading ═══ */
+.bp-section-heading {
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:40px;
+  color:#1a1a1a;
+  position:relative;
+  padding-bottom:16px;
+}
+.bp-section-heading::after {
+  content:'';
+  position:absolute;
+  bottom:0; left:50%; transform:translateX(-50%);
+  width:40px; height:2px;
+  background:#C4A265;
+}
+.bp-heading-light { color:#fff; }
+.bp-heading-light::after { background:#C4A265; }
+
+/* Brand Statement */
+.bp-statement { text-align:center; padding:64px 24px; background:#FAFAF8; }
+.bp-statement-inner { max-width:560px; margin:0 auto; }
+.bp-statement-accent { width:40px; height:2px; background:#C4A265; margin:0 auto 24px; }
+.bp-statement-title { font-family:'Inter',sans-serif; font-size:13px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin-bottom:8px; color:#1a1a1a; }
+.bp-statement-tagline { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; line-height:1.3; margin-bottom:20px; color:#1a1a1a; }
+.bp-statement-body { font-size:14px; font-weight:300; line-height:1.85; color:#666; }
+
+/* Transformation Comparison */
+.bp-transform { padding:64px 24px; text-align:center; background:#fff; }
+.bp-transform-grid { display:grid; grid-template-columns:1fr; gap:16px; max-width:800px; margin:0 auto; }
+.bp-transform-card { border-radius:16px; padding:32px 24px; text-align:left; }
+.bp-transform-without { background:#FFF5F5; border:1px solid #FECACA; }
+.bp-transform-with { background:#F0FDF4; border:1px solid #BBF7D0; }
+.bp-transform-label { font-family:'Inter',sans-serif; font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; margin-bottom:24px; padding-bottom:12px; border-bottom:1px solid rgba(0,0,0,.08); color:#1a1a1a; }
+.bp-transform-list { list-style:none; padding:0; margin:0; }
+.bp-transform-list li { display:flex; align-items:flex-start; gap:12px; font-size:14px; font-weight:400; line-height:1.6; margin-bottom:14px; color:#444; }
+.bp-transform-list li:last-child { margin-bottom:0; }
+.bp-bullet { font-size:14px; font-weight:700; flex-shrink:0; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; margin-top:2px; }
+.bp-bullet-x { background:rgba(220,38,38,.2); color:#EF4444; }
+.bp-bullet-check { background:rgba(34,197,94,.2); color:#22C55E; }
+
+/* Feature Grid */
+.bp-features { padding:64px 24px; background:#FAFAF8; }
+.bp-features-grid { display:grid; grid-template-columns:1fr; gap:12px; max-width:960px; margin:0 auto; }
+.bp-feature-card { background:#fff; border:1px solid #E8E8E8; border-radius:16px; padding:32px 20px; text-align:left; transition:all .3s; }
+.bp-feature-card:hover { border-color:#C4A265; transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.06); }
+.bp-feature-num { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; color:#C4A265; letter-spacing:.1em; margin-bottom:16px; }
+.bp-feature-name { font-family:'Inter',sans-serif; font-size:15px; font-weight:600; margin-bottom:10px; color:#1a1a1a; }
+.bp-feature-desc { font-size:13px; font-weight:300; color:#888; line-height:1.7; }
+
+/* Ritual Steps */
+.bp-ritual { padding:64px 24px; text-align:center; background:#FAFAF8; }
+.bp-ritual-subtitle { font-size:14px; font-weight:300; color:#888; margin-bottom:40px; margin-top:-24px; }
+.bp-ritual-steps { display:grid; grid-template-columns:1fr; gap:16px; max-width:900px; margin:0 auto; }
+.bp-ritual-step { text-align:center; background:#fff; border-radius:20px; padding:40px 24px 32px; border:1px solid #E8E8E8; transition:box-shadow .3s; }
+.bp-ritual-step:hover { box-shadow:0 8px 32px rgba(0,0,0,.06); }
+.bp-ritual-circle { width:56px; height:56px; border-radius:50%; border:2px solid #C4A265; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; color:#C4A265; letter-spacing:.05em; }
+.bp-ritual-step-title { font-family:'Inter',sans-serif; font-size:16px; font-weight:700; margin-bottom:10px; color:#1a1a1a; }
+.bp-ritual-step-desc { font-size:13px; font-weight:300; color:#666; line-height:1.75; }
+
+/* ═══ UGC Review Carousel ═══ */
+.bp-ugc-section { padding:64px 0; background:#fff; overflow:hidden; }
+.bp-ugc-section .bp-section-heading { padding:0 24px 16px; }
+.bp-ugc-carousel { position:relative; width:100%; }
+.bp-ugc-track { display:flex; gap:20px; animation:ugcScroll 40s linear infinite; padding:0 20px; }
+.bp-ugc-track:hover { animation-play-state:paused; }
+.bp-ugc-slide { flex-shrink:0; width:280px; }
+.bp-ugc-img { width:280px; height:360px; border-radius:16px; overflow:hidden; margin-bottom:16px; }
+.bp-ugc-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+.bp-ugc-slide:hover .bp-ugc-img img { transform:scale(1.05); }
+.bp-ugc-review { padding:0 4px; }
+.bp-ugc-stars { display:flex; gap:2px; margin-bottom:8px; }
+.bp-ugc-stars svg { width:14px; height:14px; fill:#C4A265; }
+.bp-ugc-text { font-size:13px; font-weight:300; font-style:italic; line-height:1.65; color:#444; margin-bottom:8px; }
+.bp-ugc-author { font-size:12px; font-weight:600; color:#1a1a1a; letter-spacing:.04em; }
+@keyframes ugcScroll {
+  0% { transform:translateX(0); }
+  100% { transform:translateX(-50%); }
+}
+
+/* FAQ */
+.bp-faq { padding:64px 24px; background:#FAFAF8; }
+.bp-faq-list { max-width:700px; margin:0 auto; }
+.bp-faq-item { border-bottom:1px solid #E5E5E5; }
+.bp-faq-item:first-child { border-top:1px solid #E5E5E5; }
+.bp-faq-q { font-family:'Inter',sans-serif; font-size:15px; font-weight:600; color:#1a1a1a; padding:20px 0; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; }
+.bp-faq-q::after { content:'+'; font-size:20px; font-weight:300; color:#999; transition:transform .3s; flex-shrink:0; margin-left:16px; }
+.bp-faq-item[open] .bp-faq-q::after { content:'−'; }
+.bp-faq-q::-webkit-details-marker { display:none; }
+.bp-faq-a { font-size:14px; font-weight:300; color:#666; line-height:1.8; padding:0 0 20px; }
+
+/* Dark CTA */
+.bp-dark-cta { background:#1a1a1a; padding:72px 24px; text-align:center; }
+.bp-dark-cta-label { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#C4A265; margin-bottom:12px; }
+.bp-dark-cta-text { font-size:16px; font-weight:300; color:rgba(255,255,255,.6); line-height:1.7; margin-bottom:32px; max-width:400px; margin-left:auto; margin-right:auto; }
+.bp-dark-cta-btn { display:inline-block; background:linear-gradient(135deg,#C4A265,#D4B97A); color:#1a1a1a; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; padding:16px 48px; border-radius:30px; border:none; cursor:pointer; transition:all .3s; letter-spacing:.04em; }
+.bp-dark-cta-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(196,162,101,.3); }
+
+/* Scroll Top */
+.bp-scroll-top { position:fixed; bottom:80px; right:16px; width:44px; height:44px; background:#1a1a1a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; box-shadow:0 4px 16px rgba(0,0,0,.15); transition:all .2s; z-index:99; }
+.bp-scroll-top:hover { transform:scale(1.1); background:#C4A265; }
+.bp-scroll-top svg { width:20px; height:20px; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS — ALL DEVICE SIZES
+   ═══════════════════════════════════════════════════ */
+
+/* ═══ BASE MOBILE-FIRST ═══ */
+.cc-gallery-thumbs { display:none; }
+.cc-gallery-col { flex-direction:column; }
+.cc-gallery-main { max-height:75vh; }
+.cc-gallery-slide img { max-height:75vh; object-fit:contain; }
+
+/* ═══ SMALL MOBILE (≤374px) — iPhone SE, small Androids ═══ */
+@media (max-width:374px) {
+  .cc-product-page { padding:0 12px 40px; }
+  .cc-product-title { font-size:22px; }
+  .cc-sale-price { font-size:22px; }
+  .cc-compare-price { font-size:18px; }
+  .cc-color-swatch { width:70px; }
+  .cc-swatch-img { width:70px; height:88px; }
+  .cc-swatch-name { font-size:7px; }
+  .cc-size-btn { min-width:44px; height:40px; padding:0 12px; font-size:13px; }
+  .cc-atc-row { flex-direction:column; gap:8px; }
+  .cc-qty-selector { width:100%; justify-content:center; }
+  .cc-atc-btn { height:48px; font-size:14px; }
+  .cc-meta-links { flex-wrap:wrap; gap:12px; }
+  .bp-statement-tagline { font-size:18px; }
+  .bp-transform-grid { grid-template-columns:1fr; gap:12px; }
+  .bp-features-grid { grid-template-columns:1fr; gap:10px; }
+  .bp-feature-card { padding:20px 16px; }
+  .bp-ritual-steps { grid-template-columns:1fr; gap:12px; }
+  .bp-ugc-slide { width:220px; }
+  .bp-ugc-img { width:220px; height:280px; }
+  .bp-dark-cta { padding:48px 16px; }
+  .bp-dark-cta-btn { padding:14px 32px; font-size:13px; }
+  .is-bundle-price { font-size:14px; }
+  .is-bundle-sub { font-size:11px; }
+  .is-sale-banner { font-size:9px; padding:7px 10px; gap:5px; }
+  .is-fire { font-size:12px; }
+  .is-cd-num { font-size:12px; padding:2px 4px; min-width:22px; }
+  .is-cd-sep { font-size:10px; }
+  .is-banner-label { font-size:9px; }
+  .cc-product-page { max-width:100vw; overflow-x:hidden; }
+}
+
+/* ═══ MOBILE (375–479px) — iPhone 13/14/15, Pixel ═══ */
+@media (min-width:375px) and (max-width:479px) {
+  .cc-product-page { padding:0 16px 50px; }
+  .cc-product-title { font-size:24px; }
+  .cc-sale-price { font-size:24px; }
+  .cc-compare-price { font-size:20px; }
+  .cc-color-swatch { width:80px; }
+  .cc-swatch-img { width:80px; height:100px; }
+  .cc-swatch-name { font-size:8px; }
+  .cc-size-btn { min-width:50px; height:42px; font-size:13px; }
+  .cc-atc-row { flex-direction:row; gap:10px; }
+  .bp-statement-title { font-size:22px; }
+  .bp-features-grid { grid-template-columns:1fr 1fr; gap:8px; }
+  .bp-feature-desc { font-size:11px; }
+  .bp-testimonials-grid { gap:16px; }
+  .is-sale-banner { font-size:10px; padding:8px 12px; gap:6px; }
+  .is-fire { font-size:13px; }
+  .is-cd-num { font-size:13px; padding:3px 5px; min-width:24px; }
+  .is-cd-sep { font-size:11px; }
+  .is-banner-label { font-size:10px; }
+  .cc-product-page { max-width:100vw; overflow-x:hidden; }
+}
+
+/* ═══ LARGE MOBILE (480–639px) — iPhone Pro Max, large Androids, landscape phones ═══ */
+@media (min-width:480px) and (max-width:639px) {
+  .cc-product-page { padding:0 20px 50px; }
+  .cc-product-title { font-size:26px; }
+  .cc-sale-price { font-size:26px; }
+  .cc-compare-price { font-size:22px; }
+  .cc-color-swatch { width:88px; }
+  .cc-swatch-img { width:88px; height:108px; }
+  .bp-transform-grid { grid-template-columns:1fr 1fr; }
+  .bp-features-grid { grid-template-columns:1fr 1fr; gap:10px; }
+  .bp-faq-grid { grid-template-columns:1fr 1fr; }
+}
+
+/* ═══ SMALL TABLET (640–768px) — iPad Mini, small tablets, landscape large phones ═══ */
+@media (min-width:640px) and (max-width:768px) {
+  .cc-product-page { padding:0 24px 60px; }
+  .cc-product-title { font-size:28px; }
+  .cc-sale-price { font-size:28px; }
+  .cc-compare-price { font-size:24px; }
+  .cc-color-swatch { width:90px; }
+  .cc-swatch-img { width:90px; height:110px; }
+  .bp-transform-grid { grid-template-columns:1fr 1fr; }
+  .bp-features-grid { grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .bp-ritual-steps { grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .bp-testimonials-grid { grid-template-columns:1fr 1fr; gap:16px; }
+  .bp-faq-grid { grid-template-columns:1fr 1fr; gap:12px; }
+  .bp-reviews-list { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .bp-review { margin-bottom:0; }
+}
+
+/* ═══ TABLET (769–1023px) — iPad, iPad Air ═══ */
+@media (min-width:769px) {
+  .cc-product-row { grid-template-columns:55% 45%; gap:40px; }
+  .cc-gallery-col { flex-direction:row; position:sticky; top:160px; align-self:start; }
+  .cc-gallery-thumbs { display:flex; }
+  .cc-gallery-main { max-height:none; }
+  .cc-gallery-slide img { max-height:none; object-fit:cover; }
+  .cc-gallery-arrow { display:none; }
+  .cc-gallery-counter { display:none; }
+  .cc-product-title { font-size:32px; }
+  .cc-sale-price { font-size:32px; }
+  .cc-compare-price { font-size:26px; }
+  .cc-info-col { overflow:visible; }
+  .cc-product-row { overflow:visible; }
+  .cc-product-page { overflow:visible; }
+  .bp-scroll-top { display:none; }
+  /* Below-fold tablet */
+  .bp-statement { padding:64px 40px; }
+  .bp-statement-title { font-size:32px; }
+  .bp-statement-body { max-width:520px; font-size:15px; }
+  .bp-transform { padding:64px 40px; }
+  .bp-transform-title { font-size:30px; }
+  .bp-transform-grid { grid-template-columns:1fr 1fr; }
+  .bp-transform-card { padding:28px 24px; }
+  .bp-features { padding:64px 40px; }
+  .bp-features-title { font-size:30px; }
+  .bp-features-grid { grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .bp-feature-card { padding:24px 16px; }
+  .bp-feature-name { font-size:15px; }
+  .bp-feature-desc { font-size:13px; }
+  .bp-ritual { padding:64px 40px; }
+  .bp-ritual-title { font-size:30px; }
+  .bp-ritual-steps { grid-template-columns:1fr 1fr 1fr; gap:20px; }
+  .bp-testimonials { padding:64px 40px; }
+  .bp-testimonials-title { font-size:30px; }
+  .bp-testimonials-grid { grid-template-columns:1fr 1fr 1fr; gap:20px; }
+  .bp-faq { padding:64px 40px; }
+  .bp-faq-title { font-size:30px; }
+  .bp-faq-grid { grid-template-columns:1fr 1fr; gap:16px; }
+  .bp-dark-cta { padding:64px 40px; }
+  .bp-dark-cta-text { max-width:480px; font-size:16px; }
+  .bp-reviews { padding:64px 0 0; }
+  .bp-reviews-header { padding:0 40px 40px; }
+  .bp-reviews-title { font-size:32px; }
+  .bp-reviews-list { padding:0 40px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .bp-review { margin-bottom:0; }
+  .bp-load-more-wrap { padding:32px 40px 56px; }
+}
+
+/* ═══ DESKTOP (1024–1439px) — Laptops, small monitors ═══ */
+@media (min-width:1024px) {
+  .cc-product-page { padding:0 40px 80px; }
+  .cc-product-row { gap:56px; }
+  .cc-gallery-thumb { width:80px; height:80px; }
+  .cc-gallery-thumbs { width:80px; max-height:700px; }
+  .cc-info-col { padding-top:8px; }
+  .cc-color-swatch { width:100px; }
+  .cc-swatch-img { width:100px; height:120px; }
+  .cc-swatch-name { font-size:9px; }
+  .cc-size-btn { min-width:60px; height:46px; font-size:15px; }
+  .cc-atc-btn { height:56px; font-size:16px; }
+  /* Below-fold desktop */
+  .bp-statement { padding:80px 48px; }
+  .bp-statement-title { font-size:38px; }
+  .bp-statement-body { max-width:560px; font-size:16px; }
+  .bp-transform { padding:80px 48px; }
+  .bp-transform-title { font-size:36px; }
+  .bp-transform-grid { gap:24px; }
+  .bp-transform-card { padding:36px 32px; }
+  .bp-transform-list li { font-size:15px; }
+  .bp-features { padding:80px 48px; }
+  .bp-features-title { font-size:36px; }
+  .bp-features-grid { grid-template-columns:1fr 1fr 1fr; gap:20px; }
+  .bp-feature-card { padding:32px 24px; }
+  .bp-feature-name { font-size:16px; }
+  .bp-feature-desc { font-size:14px; }
+  .bp-ritual { padding:80px 48px; }
+  .bp-ritual-title { font-size:36px; }
+  .bp-ritual-steps { grid-template-columns:1fr 1fr 1fr; gap:24px; }
+  .bp-ritual-step { padding:40px 24px; }
+  .bp-ritual-number { font-size:42px; }
+  .bp-ritual-step-title { font-size:20px; }
+  .bp-ritual-step-desc { font-size:14px; }
+  .bp-testimonials { padding:80px 48px; }
+  .bp-testimonials-title { font-size:36px; }
+  .bp-testimonials-grid { grid-template-columns:1fr 1fr 1fr; gap:24px; }
+  .bp-testimonial { padding:36px 24px; }
+  .bp-testimonial-quote { font-size:15px; }
+  .bp-faq { padding:80px 48px; }
+  .bp-faq-title { font-size:36px; }
+  .bp-faq-grid { grid-template-columns:1fr 1fr 1fr; gap:20px; }
+  .bp-faq-q { font-size:16px; }
+  .bp-faq-a { font-size:14px; }
+  .bp-dark-cta { padding:80px 48px; }
+  .bp-dark-cta-text { max-width:520px; font-size:17px; }
+  .bp-dark-cta-btn { font-size:15px; padding:18px 48px; }
+  .bp-reviews { padding:80px 0 0; }
+  .bp-reviews-header { padding:0 48px 48px; }
+  .bp-reviews-title { font-size:38px; }
+  .bp-reviews-list { padding:0 48px; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+  .bp-load-more-wrap { padding:40px 48px 64px; }
+}
+
+/* ═══ LARGE DESKTOP (1440px+) — Large monitors, ultrawide ═══ */
+@media (min-width:1440px) {
+  .cc-product-page { padding:0 64px 100px; }
+  .cc-product-row { max-width:1300px; margin:0 auto; }
+  .cc-color-swatch { width:110px; }
+  .cc-swatch-img { width:110px; height:130px; }
+  .cc-gallery-thumb { width:88px; height:88px; }
+  .cc-gallery-thumbs { width:88px; }
+  /* Below-fold large desktop */
+  .bp-statement { padding:96px 64px; }
+  .bp-statement-title { font-size:44px; }
+  .bp-statement-body { max-width:640px; font-size:17px; }
+  .bp-transform { padding:96px 64px; }
+  .bp-transform-title { font-size:40px; }
+  .bp-transform-grid { max-width:1000px; gap:32px; }
+  .bp-transform-card { padding:40px 36px; }
+  .bp-transform-list li { font-size:16px; margin-bottom:14px; }
+  .bp-features { padding:96px 64px; }
+  .bp-features-title { font-size:40px; }
+  .bp-features-grid { max-width:1200px; gap:24px; }
+  .bp-feature-card { padding:36px 28px; }
+  .bp-feature-icon { width:52px; height:52px; }
+  .bp-feature-icon svg { width:36px; height:36px; }
+  .bp-feature-name { font-size:17px; }
+  .bp-ritual { padding:96px 64px; }
+  .bp-ritual-title { font-size:40px; }
+  .bp-ritual-steps { max-width:1000px; gap:48px; }
+  .bp-ritual-number { font-size:48px; }
+  .bp-ritual-step-title { font-size:22px; }
+  .bp-ritual-step-desc { font-size:15px; max-width:340px; }
+  .bp-testimonials { padding:96px 64px; }
+  .bp-testimonials-title { font-size:40px; }
+  .bp-testimonials-grid { max-width:1100px; gap:28px; }
+  .bp-testimonial { padding:40px 28px; }
+  .bp-testimonial-quote { font-size:16px; }
+  .bp-testimonial-author { font-size:16px; }
+  .bp-faq { padding:96px 64px; }
+  .bp-faq-title { font-size:40px; }
+  .bp-faq-grid { max-width:1100px; }
+  .bp-faq-item { padding:28px; }
+  .bp-faq-q { font-size:17px; }
+  .bp-faq-a { font-size:15px; }
+  .bp-dark-cta { padding:96px 64px; }
+  .bp-dark-cta-text { max-width:580px; font-size:18px; }
+  .bp-reviews-header { padding:0 64px 56px; }
+  .bp-reviews-title { font-size:44px; }
+  .bp-reviews-list { padding:0 64px; gap:28px; }
+  .bp-load-more-wrap { padding:48px 64px 80px; }
+}
+</style>
+
+<script>
+(function() {
+  /* ═══ Gallery Carousel ═══ */
+  const galleryTrack = document.getElementById('ccGalleryTrack');
+  const allSlides = galleryTrack ? Array.from(galleryTrack.querySelectorAll('.cc-gallery-slide')) : [];
+  const prevBtn = document.getElementById('ccGalleryPrev');
+  const nextBtn = document.getElementById('ccGalleryNext');
+  const counterCurrent = document.getElementById('ccCurrentSlide');
+  const counterTotal = document.getElementById('ccTotalSlides');
+  const thumbContainer = document.getElementById('ccGalleryThumbs');
+  let allThumbs = thumbContainer ? Array.from(thumbContainer.querySelectorAll('.cc-gallery-thumb')) : [];
+  let filteredSlides = allSlides.slice();
+  let filteredThumbs = allThumbs.slice();
+  let currentIdx = 0;
+  let totalSlides = allSlides.length;
+
+  function goToSlide(idx, smooth) {
+    if (totalSlides === 0) return;
+    if (idx < 0) idx = totalSlides - 1;
+    if (idx >= totalSlides) idx = 0;
+    galleryTrack.style.transition = smooth !== false ? 'transform 0.4s cubic-bezier(0.25,0.1,0.25,1)' : 'none';
+    galleryTrack.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    if (counterCurrent) counterCurrent.textContent = idx + 1;
+    // Update thumbs
+    filteredThumbs.forEach((t, i) => t.classList.toggle('active', i === idx));
+    currentIdx = idx;
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentIdx - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentIdx + 1));
+
+  // Thumb clicks
+  allThumbs.forEach((thumb, i) => {
+    thumb.addEventListener('click', () => goToSlide(i));
+  });
+
+  // Touch swipe
+  let touchStartX = 0, isDragging = false, dragOffset = 0;
+  const galleryMain = document.getElementById('ccGalleryMain');
+  if (galleryMain) {
+    galleryMain.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      isDragging = true;
+      dragOffset = 0;
+      galleryTrack.style.transition = 'none';
+    }, { passive: true });
+    galleryMain.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      dragOffset = e.touches[0].clientX - touchStartX;
+      const base = -(currentIdx * 100);
+      const pct = (dragOffset / galleryMain.offsetWidth) * 100;
+      galleryTrack.style.transform = 'translateX(' + (base + pct) + '%)';
+    }, { passive: true });
+    galleryMain.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      const threshold = galleryMain.offsetWidth * 0.2;
+      if (dragOffset < -threshold) goToSlide(currentIdx + 1);
+      else if (dragOffset > threshold) goToSlide(currentIdx - 1);
+      else goToSlide(currentIdx);
+      dragOffset = 0;
+    }, { passive: true });
+  }
+
+  /* ═══ Gallery Color Filtering ═══ */
+  function filterGalleryByColor(colorName) {
+    if (!galleryTrack || allSlides.length === 0) return;
+    const cl = colorName.toLowerCase().trim();
+    const matching = allSlides.filter(s => {
+      const alt = (s.querySelector('img')?.alt || '').toLowerCase();
+      return alt.includes(cl);
+    });
+    filteredSlides = matching.length > 0 ? matching : allSlides;
+    filteredThumbs = matching.length > 0 ? allThumbs.filter((t, i) => {
+      const alt = (allSlides[i]?.querySelector('img')?.alt || '').toLowerCase();
+      return alt.includes(cl);
+    }) : allThumbs;
+    // Rebuild track
+    galleryTrack.innerHTML = '';
+    filteredSlides.forEach((s, i) => { s.setAttribute('data-index', i); galleryTrack.appendChild(s); });
+    // Rebuild thumbs
+    if (thumbContainer) {
+      thumbContainer.innerHTML = '';
+      filteredThumbs.forEach((t, i) => {
+        t.classList.toggle('active', i === 0);
+        t.onclick = () => goToSlide(i);
+        thumbContainer.appendChild(t);
+      });
+    }
+    totalSlides = filteredSlides.length;
+    if (counterTotal) counterTotal.textContent = totalSlides;
+    goToSlide(0, false);
+  }
+
+  /* ═══ Color Swatch Clicks ═══ */
+  document.querySelectorAll('.cc-color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', function() {
+      document.querySelectorAll('.cc-color-swatch').forEach(s => {
+        s.classList.remove('active');
+        s.querySelector('.cc-swatch-name')?.classList.remove('active');
+      });
+      this.classList.add('active');
+      this.querySelector('.cc-swatch-name')?.classList.add('active');
+      const color = this.dataset.color;
+      // Update vendor text to color name
+      const vendorEl = document.querySelector('.cc-vendor');
+      if (vendorEl) vendorEl.textContent = color;
+      // Filter gallery
+      filterGalleryByColor(color);
+      // Find the matching variant and update ATC state (handles OOS)
+      updateVariantId();
+      // On mobile, scroll up to the gallery so user sees the updated image
+      if (window.innerWidth < 769) {
+        const gallery = document.querySelector('.cc-gallery-col');
+        if (gallery) gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ═══ Size Button Clicks ═══ */
+  document.querySelectorAll('.cc-size-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.cc-size-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('ccSizeName').textContent = this.dataset.size;
+      updateVariantId();
+      if (typeof syncPairSizesWithMain === 'function') syncPairSizesWithMain(this.dataset.size);
+    });
+  });
+
+  /* ═══ Find Correct Variant ID ═══ */
+  const variantData = [
+    {%- for variant in product.variants -%}
+      { id: {{ variant.id }}, color: {{ variant.option1 | json }}, size: {{ variant.option2 | json }}, available: {{ variant.available }}, price: {{ variant.price }}, comparePrice: {{ variant.compare_at_price | default: 0 }} }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ];
+
+  const oosColors = [{{ oos_colors | split: ',' | map: 'strip' | json }}].flat();
+
+  function updateVariantId() {
+    const activeColor = document.querySelector('.cc-color-swatch.active');
+    const activeSize = document.querySelector('.cc-size-btn.active');
+    if (!activeColor || !activeSize) return;
+    const color = activeColor.dataset.color;
+    const size = activeSize.dataset.size;
+    const isOos = oosColors.includes(color);
+    const match = variantData.find(v => v.color === color && v.size === size);
+    if (match) {
+      document.getElementById('cc-variant-id').value = match.id;
+      // Also update dynamic checkout (Buy Now) form
+      const dynForm = document.getElementById('cc-dynamic-checkout-form');
+      if (dynForm) {
+        const dynInput = dynForm.querySelector('input[name="id"]');
+        if (dynInput) dynInput.value = match.id;
+      }
+      // Update price
+      const saleEl = document.querySelector('.cc-sale-price');
+      const compareEl = document.querySelector('.cc-compare-price');
+      if (saleEl) saleEl.textContent = '$' + (match.price / 100).toFixed(2);
+      if (compareEl && match.comparePrice > match.price) {
+        compareEl.textContent = '$' + (match.comparePrice / 100).toFixed(2);
+        compareEl.style.display = '';
+      } else if (compareEl) {
+        compareEl.style.display = 'none';
+      }
+      // Update discount badge
+      const badge = document.querySelector('.cc-discount-badge');
+      if (badge && match.comparePrice > match.price) {
+        const pct = Math.round((1 - match.price / match.comparePrice) * 100);
+        badge.textContent = '🔥 -' + pct + '%';
+        badge.style.display = '';
+      } else if (badge) {
+        badge.style.display = 'none';
+      }
+      // Update ATC — check OOS override
+      const realAvailable = match.available && !isOos;
+      const atcBtn = document.getElementById('cc-atc-btn');
+      if (atcBtn) {
+        atcBtn.textContent = realAvailable ? 'Add to Cart' : 'Sold Out';
+        atcBtn.disabled = !realAvailable;
+      }
+    }
+  }
+
+  /* ═══ Countdown Timer ═══ */
+  const cdH = document.getElementById('isCdHours');
+  const cdM = document.getElementById('isCdMins');
+  const cdS = document.getElementById('isCdSecs');
+  let prevSec = -1;
+  function getEndOfDay() {
+    const d = new Date(); d.setHours(23, 59, 59, 999); return d;
+  }
+  let cdEnd = getEndOfDay();
+  function updateCountdown() {
+    let diff = cdEnd - new Date();
+    if (diff <= 0) { cdEnd = getEndOfDay(); diff = cdEnd - new Date(); }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    if (cdH) cdH.textContent = String(h).padStart(2, '0');
+    if (cdM) cdM.textContent = String(m).padStart(2, '0');
+    if (cdS) {
+      cdS.textContent = String(s).padStart(2, '0');
+      if (s !== prevSec) {
+        cdS.classList.remove('is-tick');
+        void cdS.offsetWidth;
+        cdS.classList.add('is-tick');
+        prevSec = s;
+      }
+    }
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ═══ Bundle Selector ═══ */
+  const qtyHidden = document.getElementById('cc-quantity');
+  const dynCheckout = document.getElementById('cc-dynamic-checkout-form');
+
+  function toggleDynamicCheckout(qty) {
+    if (!dynCheckout) return;
+    dynCheckout.style.display = (qty === '1' || qty === 1) ? '' : 'none';
+  }
+
+  document.querySelectorAll('.is-bundle-option').forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      if (e.target.closest('.is-pair-thumb') || e.target.closest('.is-pair-toggle') || e.target.closest('.is-pair-size-chip')) return;
+      document.querySelectorAll('.is-bundle-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      if (qtyHidden) qtyHidden.value = this.dataset.qty;
+      toggleDynamicCheckout(this.dataset.qty);
+    });
+  });
+
+  /* Init: sync quantity with pre-selected bundle */
+  const initBundle = document.querySelector('.is-bundle-option.selected');
+  if (initBundle && qtyHidden) {
+    qtyHidden.value = initBundle.dataset.qty || '1';
+    toggleDynamicCheckout(initBundle.dataset.qty || '1');
+  }
+
+  /* ═══ Per-pair thumbnail picker ═══ */
+  document.querySelectorAll('.is-pair-thumb').forEach(thumb => {
+    thumb.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const row = this.closest('.is-pair-row');
+      row.querySelectorAll('.is-pair-thumb').forEach(t => t.classList.remove('selected'));
+      this.classList.add('selected');
+      updateBundleSummary(this.closest('.is-bundle-option'));
+    });
+  });
+
+  /* ═══ Per-pair size chip picker ═══ */
+  document.querySelectorAll('.is-pair-size-chip').forEach(chip => {
+    chip.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const row = this.closest('.is-pair-row');
+      row.querySelectorAll('.is-pair-size-chip').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      updateBundleSummary(this.closest('.is-bundle-option'));
+    });
+  });
+
+  /* Toggle pair expanded/collapsed */
+  document.querySelectorAll('.is-pair-toggle').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const bundle = this.closest('.is-bundle-option');
+      const expanded = bundle.querySelector('.is-pair-expanded');
+      const isOpen = expanded.classList.toggle('open');
+      this.innerHTML = isOpen ? 'Done ↑' : 'Mix &amp; match ↓';
+    });
+  });
+
+  /* Recompute summary line (color + size) */
+  function updateBundleSummary(bundle) {
+    if (!bundle) return;
+    const summaryEl = bundle.querySelector('.is-pair-summary-text');
+    if (!summaryEl) return;
+    const rows = bundle.querySelectorAll('.is-pair-row');
+    const colors = Array.from(rows).map(r => r.querySelector('.is-pair-thumb.selected')?.dataset.color).filter(Boolean);
+    const sizes = Array.from(rows).map(r => r.querySelector('.is-pair-size-chip.selected')?.dataset.size).filter(Boolean);
+    const uniqueColors = [...new Set(colors)];
+    const uniqueSizes = [...new Set(sizes)];
+    const checkSvg = '<span class="is-pair-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
+    if (uniqueColors.length === 1 && uniqueSizes.length === 1) {
+      summaryEl.innerHTML = checkSvg + '<span>All ' + colors.length + ' pairs in <strong class="is-pair-sync-color">' + uniqueColors[0] + '</strong> · Size ' + uniqueSizes[0] + '</span>';
+    } else {
+      summaryEl.innerHTML = checkSvg + '<span><strong>' + colors.length + ' pairs</strong> · Custom mix</span>';
+    }
+  }
+
+  /* Sync pairs with main carousel color change */
+  function syncPairsWithMain(newColor) {
+    document.querySelectorAll('.is-bundle-option').forEach(bundle => {
+      const rows = bundle.querySelectorAll('.is-pair-row');
+      if (!rows.length) return;
+      const colors = Array.from(rows).map(r => r.querySelector('.is-pair-thumb.selected')?.dataset.color);
+      const allSame = colors.every(c => c === colors[0]);
+      if (allSame) {
+        rows.forEach(row => {
+          row.querySelectorAll('.is-pair-thumb').forEach(t => {
+            t.classList.toggle('selected', t.dataset.color === newColor);
+          });
+        });
+        updateBundleSummary(bundle);
+      }
+    });
+  }
+
+  /* Sync pairs with main size selector change */
+  let prevMainSize = document.querySelector('.cc-size-btn.active')?.dataset.size || 'XS';
+  function syncPairSizesWithMain(newSize) {
+    document.querySelectorAll('.is-bundle-option').forEach(bundle => {
+      const rows = bundle.querySelectorAll('.is-pair-row');
+      if (!rows.length) return;
+      rows.forEach(row => {
+        const currentChip = row.querySelector('.is-pair-size-chip.selected');
+        if (currentChip && currentChip.dataset.size === prevMainSize) {
+          row.querySelectorAll('.is-pair-size-chip').forEach(c => c.classList.remove('selected'));
+          const target = row.querySelector('.is-pair-size-chip[data-size="' + newSize + '"]');
+          if (target) target.classList.add('selected');
+        }
+      });
+      updateBundleSummary(bundle);
+    });
+    prevMainSize = newSize;
+  }
+
+  /* Hook color swatch clicks to sync pairs */
+  document.querySelectorAll('.cc-color-swatch').forEach(sw => {
+    sw.addEventListener('click', () => syncPairsWithMain(sw.dataset.color));
+  });
+
+  /* ═══ ATC Form Submit ═══ */
+  const form = document.getElementById('cc-product-form');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('cc-atc-btn');
+      const origText = btn.textContent;
+      btn.textContent = 'Adding...';
+      btn.disabled = true;
+      try {
+        const vid = parseInt(document.getElementById('cc-variant-id').value);
+        const activeTier = document.querySelector('.is-bundle-option.selected');
+        const tierQty = activeTier ? parseInt(activeTier.dataset.qty) || 1 : 1;
+
+        /* Build items array with per-pair variant support */
+        let items = [];
+
+        function getVariantId(color, size) {
+          const match = variantData.find(v => v.color === color && v.size === size);
+          return match ? match.id : vid;
+        }
+
+        function getPairVariants(bundleEl) {
+          const pairRows = bundleEl.querySelectorAll('.is-pair-row');
+          const variants = [];
+          /* Read the main selector defaults */
+          const mainColor = document.querySelector('.cc-color-swatch.active');
+          const mainSize = document.querySelector('.cc-size-btn.active');
+          const defaultColor = mainColor ? mainColor.dataset.color : '';
+          const defaultSize = mainSize ? mainSize.dataset.size : '';
+
+          if (pairRows.length > 0) {
+            pairRows.forEach(row => {
+              const selThumb = row.querySelector('.is-pair-thumb.selected');
+              const selSize = row.querySelector('.is-pair-size-chip.selected');
+              const pairColor = selThumb ? selThumb.dataset.color : defaultColor;
+              const pairSize = selSize ? selSize.dataset.size : defaultSize;
+              variants.push(getVariantId(pairColor, pairSize));
+            });
+          }
+          return variants;
+        }
+
+        if (tierQty === 2) {
+          /* 2-pair bundle */
+          const pairVids = getPairVariants(activeTier);
+          const vid1 = pairVids[0] || vid;
+          const vid2 = pairVids[1] || vid;
+          items = [
+            { id: vid1, quantity: 1, properties: { _bundle: '2pack' } },
+            { id: vid2, quantity: 1, properties: { _bundle: '2pack', _free: 'true' } }
+          ];
+        } else if (tierQty === 5) {
+          /* 5-pack bundle */
+          const pairVids = getPairVariants(activeTier);
+          items = [];
+          for (let i = 0; i < 5; i++) {
+            const pv = pairVids[i] || vid;
+            const isFree = i >= 3;
+            items.push({
+              id: pv,
+              quantity: 1,
+              properties: isFree
+                ? { _bundle: '5pack', _free: 'true' }
+                : { _bundle: '5pack' }
+            });
+          }
+        } else {
+          /* Buy 1 — single item, no bundle */
+          items = [{ id: vid, quantity: 1 }];
+        }
+
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: items })
+        }).then(r => { if (!r.ok) throw new Error('Add failed'); return r.json(); });
+
+        btn.textContent = 'Added ✓';
+        btn.style.background = '#16A34A';
+        await window.CartDrawer.refresh();
+        window.CartDrawer.open();
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.style.background = '#1a1a1a';
+          btn.disabled = false;
+        }, 2000);
+      } catch(err) {
+        console.error('ATC error:', err);
+        btn.textContent = origText;
+        btn.style.background = '#1a1a1a';
+        btn.disabled = false;
+      }
+    });
+  }
+
+  /* ═══ Accordion Toggle ═══ */
+  document.querySelectorAll('.cc-acc-trigger').forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const content = this.nextElementSibling;
+      const isOpen = this.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.cc-acc-trigger').forEach(t => {
+        t.classList.remove('open');
+        t.nextElementSibling.style.maxHeight = '0';
+        // Reset icon to plus
+        const svg = t.querySelector('svg');
+        if (svg) svg.innerHTML = '<path d="M12 5v14M5 12h14"/>';
+      });
+      if (!isOpen) {
+        this.classList.add('open');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        // Set icon to minus
+        const svg = this.querySelector('svg');
+        if (svg) svg.innerHTML = '<path d="M5 12h14"/>';
+      }
+    });
+  });
+
+  /* ═══ Color Swatch Carousel Scroll ═══ */
+  const swatchTrack = document.getElementById('ccSwatchTrack');
+  document.getElementById('ccSwatchPrev')?.addEventListener('click', () => {
+    swatchTrack.scrollBy({ left: -220, behavior: 'smooth' });
+  });
+  document.getElementById('ccSwatchNext')?.addEventListener('click', () => {
+    swatchTrack.scrollBy({ left: 220, behavior: 'smooth' });
+  });
+
+  /* ═══ Initial Color Filter ═══ */
+  const initialSwatch = document.querySelector('.cc-color-swatch.active');
+  if (initialSwatch) {
+    filterGalleryByColor(initialSwatch.dataset.color);
+  }
+
+  /* ═══ Stock Count Animation ═══ */
+  let stockCount = 94;
+  setInterval(() => {
+    if (Math.random() > 0.7 && stockCount > 12) {
+      stockCount--;
+      const el = document.getElementById('ccStockCount');
+      if (el) el.textContent = stockCount;
+    }
+  }, 15000);
+
+  /* ═══ Load More Reviews ═══ */
+  const loadMoreBtn = document.getElementById('bp-load-more');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function() {
+      const hidden = document.querySelectorAll('.bp-review-hidden');
+      hidden.forEach(el => { el.classList.remove('bp-review-hidden'); el.classList.add('bp-review-reveal'); });
+      this.style.display = 'none';
+    });
+  }
+
+  /* ═══ UGC Carousel — duplicate slides for infinite scroll ═══ */
+  const ugcTrack = document.getElementById('bpUgcTrack');
+  if (ugcTrack) {
+    const slides = ugcTrack.innerHTML;
+    ugcTrack.innerHTML = slides + slides;
+  }
+
+  /* ═══ Scroll to Top Button ═══ */
+  const scrollBtn = document.querySelector('.bp-scroll-top');
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    window.addEventListener('scroll', () => { scrollBtn.style.opacity = window.scrollY > 600 ? '1' : '0'; scrollBtn.style.pointerEvents = window.scrollY > 600 ? 'auto' : 'none'; }, { passive: true });
+    scrollBtn.style.opacity = '0';
+    scrollBtn.style.pointerEvents = 'none';
+    scrollBtn.style.transition = 'opacity .3s, transform .2s';
+  }
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Yoga Shorts Product",
+  "settings": [
+    { "type": "text", "id": "review_count", "label": "Review count", "default": "1,892" },
+    { "type": "text", "id": "avg_rating", "label": "Average rating", "default": "4.9" },
+    { "type": "text", "id": "total_reviews", "label": "Total reviews label", "default": "50+" }
+  ],
+  "blocks": []
+}
+{% endschema %}

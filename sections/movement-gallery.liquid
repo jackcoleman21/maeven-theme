@@ -1,0 +1,131 @@
+<!-- ═══ Movement Gallery — UGC Lifestyle Photos (CC 1:1 content) ═══ -->
+<section class="mg-section">
+  <h2 class="mg-heading">Movement Looks Good on You.</h2>
+  <p class="mg-subheading">Maeven designs sculpting activewear that lifts, shapes, and moves with real women, every day. 🔥</p>
+
+  <div class="mg-carousel" id="mgCarousel-{{ section.id }}">
+    <div class="mg-track" id="mgTrack-{{ section.id }}">
+
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/2_dafcd7f8-18eb-4aee-806f-ca86fef4dcba.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/quality_restoration_20250915110527056.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/12_b547d840-d0c6-4fa0-ad8b-701aaefd13c8.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/IMG_3307.heic?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/10_e028fd08-4133-477a-a200-a03a9585710b.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/27_24c61e38-1934-4f66-a178-ff98a8cb02ea.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/32_1a48338d-4ef8-48f1-bfe3-520ad298ad0e.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/IMG_4646.jpg?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/1_49650e4c-ad3e-48a6-83af-36fbb52a8c46.jpg?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/IMG_0077.jpg?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/IMG_0054.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/IMG_4647.jpg?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/11_bf23b159-f459-4255-9bd9-7f9c4de69c3d.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/8_d80af053-cab0-4be2-880a-cd1823d851a0.png?width=600" alt="Lifestyle" loading="lazy"></div>
+      <div class="mg-card"><img src="https://coralcanton.com/cdn/shop/files/Growth_is_a_mindset...ex_1.jpg?width=600" alt="Lifestyle" loading="lazy"></div>
+
+    </div>
+    <div class="mg-dots" id="mgDots-{{ section.id }}"></div>
+  </div>
+</section>
+
+<style>
+.mg-section {
+  padding: 48px 0 32px;
+  background: #f9f6f2;
+  text-align: center;
+}
+.mg-heading {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+.mg-subheading {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #777;
+  margin: 0 auto 24px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+.mg-carousel { overflow: hidden; padding: 0 12px; }
+.mg-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.mg-track::-webkit-scrollbar { display: none; }
+.mg-card {
+  flex: 0 0 calc(50% - 5px);
+  scroll-snap-align: start;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eae6e0;
+}
+.mg-card img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  display: block;
+}
+.mg-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 0 0;
+}
+.mg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.mg-dot.active { background: #1a1a1a; }
+@media (min-width: 750px) {
+  .mg-card { flex: 0 0 calc(33.333% - 7px); }
+  .mg-heading { font-size: 34px; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var sectionId = '{{ section.id }}';
+  var track = document.getElementById('mgTrack-' + sectionId);
+  var dotsWrap = document.getElementById('mgDots-' + sectionId);
+  if (!track || !dotsWrap) return;
+  var cards = track.querySelectorAll('.mg-card');
+  var cpp = window.innerWidth >= 750 ? 3 : 2;
+  var total = Math.ceil(cards.length / cpp);
+  for (var i = 0; i < total; i++) {
+    var dot = document.createElement('button');
+    dot.className = 'mg-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.addEventListener('click', function() {
+      var pg = parseInt(this.dataset.page);
+      cards[pg * cpp]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      dotsWrap.querySelectorAll('.mg-dot').forEach(function(d, j) { d.classList.toggle('active', j === pg); });
+    });
+    dotsWrap.appendChild(dot);
+  }
+  track.addEventListener('scroll', function() {
+    var pg = Math.round(track.scrollLeft / (cards[0].offsetWidth + 10) / cpp);
+    dotsWrap.querySelectorAll('.mg-dot').forEach(function(d, j) { d.classList.toggle('active', j === pg); });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Movement Gallery",
+  "settings": [],
+  "presets": [{ "name": "Movement Gallery" }]
+}
+{% endschema %}

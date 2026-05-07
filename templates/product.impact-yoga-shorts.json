@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-yoga-shorts",
+      "settings": {
+        "review_count": "1,892",
+        "avg_rating": "4.9",
+        "total_reviews": "50+"
+      }
+    }
+  },
+  "order": ["main"]
+}

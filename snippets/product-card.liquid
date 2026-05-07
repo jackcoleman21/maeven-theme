@@ -1,0 +1,70 @@
+{% comment %}
+  Product Card Snippet — Maeven (Premium Coral Canton style)
+  Usage: {% render 'product-card', product: product %}
+{% endcomment %}
+
+<div class="pc-card">
+  <a href="{{ product.url }}" class="pc-card-media" aria-label="{{ product.title }}">
+    {% if product.featured_image %}
+      <img
+        class="pc-card-img"
+        src="{{ product.featured_image | image_url: width: 800 }}"
+        alt="{{ product.featured_image.alt | default: product.title }}"
+        loading="lazy"
+      >
+      {% if product.images[1] %}
+        <img
+          class="pc-card-img pc-card-img--hover"
+          src="{{ product.images[1] | image_url: width: 800 }}"
+          alt="{{ product.title }} alternate view"
+          loading="lazy"
+        >
+      {% endif %}
+    {% else %}
+      <div class="pc-card-placeholder"></div>
+    {% endif %}
+
+    {% if product.compare_at_price > product.price %}
+      {% assign pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round %}
+      <span class="pc-badge-sale">🔥-{{ pct }}%</span>
+    {% endif %}
+
+    {% unless product.available %}
+      <span class="pc-badge-oos">Sold Out</span>
+    {% endunless %}
+
+    <button class="pc-quick-add" aria-label="Quick add {{ product.title }}" data-variant-id="{{ product.first_available_variant.id }}" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    </button>
+  </a>
+
+  <a href="{{ product.url }}" class="pc-card-info">
+    {%- assign color_option = product.selected_or_first_available_variant.option1 -%}
+    {%- if color_option -%}
+      <span class="pc-card-color">{{ color_option }}</span>
+    {%- endif -%}
+    <h3 class="pc-card-title">{{ product.title }}</h3>
+    <div class="pc-card-pricing">
+      {% if product.compare_at_price > product.price %}
+        <span class="pc-price-sale">{{ product.price | money }}</span>
+        <s class="pc-price-compare">{{ product.compare_at_price | money }}</s>
+      {% else %}
+        <span class="pc-price-regular">{{ product.price | money }}</span>
+      {% endif %}
+    </div>
+    {% if product.options.size > 0 %}
+      {% for option in product.options_with_values %}
+        {% if option.name == 'Color' or option.name == 'Colour' %}
+          <div class="pc-swatches">
+            {% for value in option.values limit: 6 %}
+              <span class="pc-swatch" title="{{ value }}"></span>
+            {% endfor %}
+            {% if option.values.size > 6 %}
+              <span class="pc-swatch-more">+{{ option.values.size | minus: 6 }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </a>
+</div>

@@ -1,0 +1,126 @@
+<section class="hero" id="hero">
+  <div class="hero__media">
+    {% if section.settings.image %}
+      <img
+        src="{{ section.settings.image | image_url: width: 2800 }}"
+        alt="{{ section.settings.image.alt | default: section.settings.heading }}"
+        width="2800"
+        height="1400"
+        loading="eager"
+        fetchpriority="high"
+        style="width:100%;height:auto;display:block;object-fit:cover;"
+      >
+    {% else %}
+      <img
+        src="{{ 'hero-banner.jpg' | asset_url }}"
+        alt="{{ section.settings.heading }}"
+        width="2800"
+        height="1400"
+        loading="eager"
+        fetchpriority="high"
+        style="width:100%;height:auto;display:block;object-fit:cover;"
+      >
+    {% endif %}
+  </div>
+  {% if section.settings.button_text != blank %}
+  <div class="hero__cta-wrap">
+    <a href="{{ section.settings.button_link }}" class="hero__cta-btn">
+      {{ section.settings.button_text }}
+    </a>
+  </div>
+  {% endif %}
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .hero__media {
+    width: 100%;
+    line-height: 0;
+  }
+  .hero__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  .hero__cta-wrap {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    z-index: 2;
+  }
+  .hero__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: #fff;
+    color: #0a0a0a;
+    font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+  .hero__cta-btn:hover {
+    background: #0a0a0a;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  @media (max-width: 749px) {
+    .hero__cta-wrap {
+      bottom: 20px;
+      left: 20px;
+    }
+    .hero__cta-btn {
+      padding: 12px 24px;
+      font-size: 13px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (for SEO/alt text)",
+      "default": "Maeven — Designed for your natural shape"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Best Sellers"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "default": "/collections/all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}
